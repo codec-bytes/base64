@@ -44,11 +44,19 @@ test( success , 'QWFC' , null , [ 0x41 , 0x61 , 0x42 ] ) ;
 test( failure , '$' , null , Base64EncodeError , { start : 0 , end : 1 } ) ;
 test( failure , 'A' , null , Base64EncodeError , { start : 0 , end : 1 } ) ;
 test( failure , '=' , null , Base64EncodeError , { start : 0 , end : 1 } ) ;
+test( failure , '$$$$' , null , Base64EncodeError , { start : 0 , end : 1 } ) ;
+test( failure , 'A$$$' , null , Base64EncodeError , { start : 1 , end : 2 } ) ;
+test( failure , 'AA$$' , null , Base64EncodeError , { start : 2 , end : 3 } ) ;
+test( failure , 'AAA$' , null , Base64EncodeError , { start : 3 , end : 4 } ) ;
 test( failure , 'AAAA=' , null , Base64EncodeError , { start : 4 , end : 5 } ) ;
 test( failure , 'AAAA=' , null , Base64EncodeError , { start : 4 , end : 5 } ) ;
+test( failure , '====' , null , Base64EncodeError , { start : 0 , end : 1 } ) ;
+test( failure , 'Q===' , null , Base64EncodeError , { start : 1 , end : 2 } ) ;
+test( failure , 'QW' , null , Base64EncodeError , { start : 0 , end : 2 } ) ;
 test( failure , 'QWE' , null , Base64EncodeError , { start : 0 , end : 3 } ) ;
 test( failure , 'QU==' , null , Base64EncodeError , { start : 1 , end : 2 } ) ;
 test( failure , 'QWF=' , null , Base64EncodeError , { start : 2 , end : 3 } ) ;
+test( failure , 'QQ=A' , null , Base64EncodeError , { start : 3 , end : 4 } ) ;
 
 test( from_ascii ,
 	'TWFuIGlzIGRpc3Rpbmd1aXNoZWQsIG5vdCBvbmx5IGJ5IGhpcyByZWFzb24sIGJ1dCBieSB0aGlzIHNpbmd1bGFyIHBhc3Npb24gZnJvbSBvdGhlciBhbmltYWxzLCB3aGljaCBpcyBhIGx1c3Qgb2YgdGhlIG1pbmQsIHRoYXQgYnkgYSBwZXJzZXZlcmFuY2Ugb2YgZGVsaWdodCBpbiB0aGUgY29udGludWVkIGFuZCBpbmRlZmF0aWdhYmxlIGdlbmVyYXRpb24gb2Yga25vd2xlZGdlLCBleGNlZWRzIHRoZSBzaG9ydCB2ZWhlbWVuY2Ugb2YgYW55IGNhcm5hbCBwbGVhc3VyZS4=' ,
