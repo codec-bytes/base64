@@ -1,5 +1,6 @@
-import { iter , next , StopIteration } from '@aureooms/js-itertools' ;
-import DEFAULT_OPTIONS from './DEFAULT_OPTIONS' ;
+import { iter , next , StopIteration , enumerate } from '@aureooms/js-itertools' ;
+import { object , reflect } from '@aureooms/js-mapping' ;
+import { ValueError } from '@aureooms/js-error' ;
 
 import char4tobyte3 from './char4tobyte3' ;
 import char3tobyte2 from './char3tobyte2' ;
@@ -7,11 +8,23 @@ import char2tobyte1 from './char2tobyte1' ;
 
 import Base64EncodeError from './Base64EncodeError' ;
 
+import variants from './variants' ;
+import DEFAULT_OPTIONS from './DEFAULT_OPTIONS' ;
+
 export default function* _encode ( string , options = DEFAULT_OPTIONS ) {
+
+	if ( options.variant ) {
+		if ( variants.hasOwnProperty(options.variant) ) {
+			options = variants[options.variant] ;
+		}
+		else {
+			throw new ValueError( `unknown Base64 variant ${options.variant}` ) ;
+		}
+	}
 
 	let start = 0 ;
 
-	const index = options.index ;
+	const index = options.index || object( reflect( enumerate( options.alphabet ) ) ) ;
 	const padding = options.padding ;
 
 	const it = iter(string) ;

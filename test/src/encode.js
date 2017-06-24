@@ -7,7 +7,7 @@ import { encode , Base64EncodeError , byte2pair } from '../../src' ;
 
 function success ( t , string , options , expected ) {
 
-	const bytes = encode( string ) ;
+	const bytes = encode( string , options ) ;
 
 	t.deepEqual( bytes , expected ) ;
 
@@ -24,42 +24,49 @@ from_ascii.title = success.title ;
 
 function failure ( t , string , options , ExpectedError , position ) {
 
-	t.throws( ( ) => encode( string ) , CodecError ) ;
-	t.throws( ( ) => encode( string ) , ExpectedError ) ;
-	t.throws( ( ) => encode( string ) , ( error ) => error.encoding === 'base64' ) ;
-	t.throws( ( ) => encode( string ) , ( error ) => error.object === string ) ;
-	t.throws( ( ) => encode( string ) , ( error ) => error.position.start === position.start ) ;
-	t.throws( ( ) => encode( string ) , ( error ) => error.position.end === position.end ) ;
+	t.throws( ( ) => encode( string , options ) , CodecError ) ;
+	t.throws( ( ) => encode( string , options ) , ExpectedError ) ;
+	t.throws( ( ) => encode( string , options ) , ( error ) => error.encoding === 'base64' ) ;
+	t.throws( ( ) => encode( string , options ) , ( error ) => error.object === string ) ;
+	t.throws( ( ) => encode( string , options ) , ( error ) => error.position.start === position.start ) ;
+	t.throws( ( ) => encode( string , options ) , ( error ) => error.position.end === position.end ) ;
 
 }
 
 failure.title = ( _ , string , options , expected ) => `encode '${string}' should fail` ;
 
 
-test( success , '' , null , [ ] ) ;
-test( success , 'QQ==' , null , [ 0x41 ] ) ;
-test( success , 'QWE=' , null , [ 0x41 , 0x61 ] ) ;
-test( success , 'QWFC' , null , [ 0x41 , 0x61 , 0x42 ] ) ;
+test( success , '' , undefined , [ ] ) ;
+test( success , 'QQ==' , undefined , [ 0x41 ] ) ;
+test( success , 'QWE=' , undefined , [ 0x41 , 0x61 ] ) ;
+test( success , 'QWFC' , undefined , [ 0x41 , 0x61 , 0x42 ] ) ;
 
-test( failure , '$' , null , Base64EncodeError , { start : 0 , end : 1 } ) ;
-test( failure , 'A' , null , Base64EncodeError , { start : 0 , end : 1 } ) ;
-test( failure , '=' , null , Base64EncodeError , { start : 0 , end : 1 } ) ;
-test( failure , '$$$$' , null , Base64EncodeError , { start : 0 , end : 1 } ) ;
-test( failure , 'A$$$' , null , Base64EncodeError , { start : 1 , end : 2 } ) ;
-test( failure , 'AA$$' , null , Base64EncodeError , { start : 2 , end : 3 } ) ;
-test( failure , 'AAA$' , null , Base64EncodeError , { start : 3 , end : 4 } ) ;
-test( failure , 'AAAA=' , null , Base64EncodeError , { start : 4 , end : 5 } ) ;
-test( failure , 'AAAA=' , null , Base64EncodeError , { start : 4 , end : 5 } ) ;
-test( failure , '====' , null , Base64EncodeError , { start : 0 , end : 1 } ) ;
-test( failure , 'Q===' , null , Base64EncodeError , { start : 1 , end : 2 } ) ;
-test( failure , 'QW' , null , Base64EncodeError , { start : 0 , end : 2 } ) ;
-test( failure , 'QWE' , null , Base64EncodeError , { start : 0 , end : 3 } ) ;
-test( failure , 'QU==' , null , Base64EncodeError , { start : 1 , end : 2 } ) ;
-test( failure , 'QWF=' , null , Base64EncodeError , { start : 2 , end : 3 } ) ;
-test( failure , 'QQ=A' , null , Base64EncodeError , { start : 3 , end : 4 } ) ;
+test( failure , '$' , undefined , Base64EncodeError , { start : 0 , end : 1 } ) ;
+test( failure , 'A' , undefined , Base64EncodeError , { start : 0 , end : 1 } ) ;
+test( failure , '=' , undefined , Base64EncodeError , { start : 0 , end : 1 } ) ;
+test( failure , '$$$$' , undefined , Base64EncodeError , { start : 0 , end : 1 } ) ;
+test( failure , 'A$$$' , undefined , Base64EncodeError , { start : 1 , end : 2 } ) ;
+test( failure , 'AA$$' , undefined , Base64EncodeError , { start : 2 , end : 3 } ) ;
+test( failure , 'AAA$' , undefined , Base64EncodeError , { start : 3 , end : 4 } ) ;
+test( failure , 'AAAA=' , undefined , Base64EncodeError , { start : 4 , end : 5 } ) ;
+test( failure , 'AAAA=' , undefined , Base64EncodeError , { start : 4 , end : 5 } ) ;
+test( failure , '====' , undefined , Base64EncodeError , { start : 0 , end : 1 } ) ;
+test( failure , 'Q===' , undefined , Base64EncodeError , { start : 1 , end : 2 } ) ;
+test( failure , 'QW' , undefined , Base64EncodeError , { start : 0 , end : 2 } ) ;
+test( failure , 'QWE' , undefined , Base64EncodeError , { start : 0 , end : 3 } ) ;
+test( failure , 'QU==' , undefined , Base64EncodeError , { start : 1 , end : 2 } ) ;
+test( failure , 'QWF=' , undefined , Base64EncodeError , { start : 2 , end : 3 } ) ;
+test( failure , 'QQ=A' , undefined , Base64EncodeError , { start : 3 , end : 4 } ) ;
 
 test( from_ascii ,
 	'TWFuIGlzIGRpc3Rpbmd1aXNoZWQsIG5vdCBvbmx5IGJ5IGhpcyByZWFzb24sIGJ1dCBieSB0aGlzIHNpbmd1bGFyIHBhc3Npb24gZnJvbSBvdGhlciBhbmltYWxzLCB3aGljaCBpcyBhIGx1c3Qgb2YgdGhlIG1pbmQsIHRoYXQgYnkgYSBwZXJzZXZlcmFuY2Ugb2YgZGVsaWdodCBpbiB0aGUgY29udGludWVkIGFuZCBpbmRlZmF0aWdhYmxlIGdlbmVyYXRpb24gb2Yga25vd2xlZGdlLCBleGNlZWRzIHRoZSBzaG9ydCB2ZWhlbWVuY2Ugb2YgYW55IGNhcm5hbCBwbGVhc3VyZS4=' ,
-	null ,
+	undefined ,
 	'Man is distinguished, not only by his reason, but by this singular passion from other animals, which is a lust of the mind, that by a perseverance of delight in the continued and indefatigable generation of knowledge, exceeds the short vehemence of any carnal pleasure.'
 ) ;
+
+test( success , '/+A=' ,              undefined , [ 0xFF , 0xE0 ] ) ;
+test( success , '_-A'  , { variant : 'RFC7515'} , [ 0xFF , 0xE0 ] ) ;
+test( success , '_.A-' , { variant : 'Y64'}     , [ 0xFF , 0xE0 ] ) ;
+test( success , ',+A'  , { variant : 'RFC3501'} , [ 0xFF , 0xE0 ] ) ;
+
+test( success , '$*A'  , { alphabet : 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789*$'} , [ 0xFF , 0xE0 ] ) ;

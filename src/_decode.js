@@ -1,18 +1,29 @@
 import { iter , next , StopIteration } from '@aureooms/js-itertools' ;
+import { ValueError } from '@aureooms/js-error' ;
 
 import byte3tochar4 from './byte3tochar4' ;
 import byte2tochar3 from './byte2tochar3' ;
 import byte1tochar2 from './byte1tochar2' ;
 
 import Base64DecodeError from './Base64DecodeError' ;
+
+import variants from './variants' ;
 import DEFAULT_OPTIONS from './DEFAULT_OPTIONS' ;
 
 export default function* _decode ( bytes , options = DEFAULT_OPTIONS ) {
 
+	if ( options.variant ) {
+		if ( variants.hasOwnProperty(options.variant) ) {
+			options = variants[options.variant] ;
+		}
+		else {
+			throw new ValueError( `unknown Base64 variant ${options.variant}` ) ;
+		}
+	}
+
 	let start = 0 ;
 
-	const alphabet = options.alphabet;
-	const padding = options.padding;
+	const { alphabet , padding } = options ;
 
 	const it = iter(bytes) ;
 
