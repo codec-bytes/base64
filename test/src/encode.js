@@ -1,5 +1,6 @@
 import test from 'ava' ;
 import ascii from '@aureooms/js-codec-ascii' ;
+import { ValueError } from '@aureooms/js-error' ;
 import { CodecError } from '@aureooms/js-codec' ;
 import { range } from '@aureooms/js-itertools' ;
 
@@ -24,12 +25,17 @@ from_ascii.title = success.title ;
 
 function failure ( t , string , options , ExpectedError , position ) {
 
-	t.throws( ( ) => encode( string , options ) , CodecError ) ;
 	t.throws( ( ) => encode( string , options ) , ExpectedError ) ;
-	t.throws( ( ) => encode( string , options ) , ( error ) => error.encoding === 'base64' ) ;
-	t.throws( ( ) => encode( string , options ) , ( error ) => error.object === string ) ;
-	t.throws( ( ) => encode( string , options ) , ( error ) => error.position.start === position.start ) ;
-	t.throws( ( ) => encode( string , options ) , ( error ) => error.position.end === position.end ) ;
+
+	if ( position ) {
+
+		t.throws( ( ) => encode( string , options ) , CodecError ) ;
+		t.throws( ( ) => encode( string , options ) , ( error ) => error.encoding === 'base64' ) ;
+		t.throws( ( ) => encode( string , options ) , ( error ) => error.object === string ) ;
+		t.throws( ( ) => encode( string , options ) , ( error ) => error.position.start === position.start ) ;
+		t.throws( ( ) => encode( string , options ) , ( error ) => error.position.end === position.end ) ;
+
+	}
 
 }
 
@@ -70,3 +76,5 @@ test( success , '_.A-' , { variant : 'Y64'}     , [ 0xFF , 0xE0 ] ) ;
 test( success , ',+A'  , { variant : 'RFC3501'} , [ 0xFF , 0xE0 ] ) ;
 
 test( success , '$*A'  , { alphabet : 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789*$'} , [ 0xFF , 0xE0 ] ) ;
+
+test( failure , '' , { variant : '?' } , ValueError ) ;
