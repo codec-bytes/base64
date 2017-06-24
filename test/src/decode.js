@@ -36,6 +36,7 @@ function failure ( t , bytes , options , ExpectedError , position ) {
 failure.title = ( _ , bytes , options , expected ) => `decode '${bytes}' should fail` ;
 
 
+test( success , [ ] , null , '' ) ;
 test( success , [ 0x41 ] , null , 'QQ==' ) ;
 test( success , [ 0x41 , 0x61 ] , null , 'QWE=' ) ;
 test( success , [ 0x41 , 0x61 , 0x42 ] , null , 'QWFC' ) ;

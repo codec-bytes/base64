@@ -36,6 +36,7 @@ function failure ( t , string , options , ExpectedError , position ) {
 failure.title = ( _ , string , options , expected ) => `encode '${string}' should fail` ;
 
 
+test( success , '' , null , [ ] ) ;
 test( success , 'QQ==' , null , [ 0x41 ] ) ;
 test( success , 'QWE=' , null , [ 0x41 , 0x61 ] ) ;
 test( success , 'QWFC' , null , [ 0x41 , 0x61 , 0x42 ] ) ;
