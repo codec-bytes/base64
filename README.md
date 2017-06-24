@@ -6,6 +6,11 @@ See [docs](https://aureooms.github.io/js-codec-base64/index.html).
 Parent is [@aureooms/js-codec](https://github.com/aureooms/js-codec).
 
 ```js
+> import ascii from '@aureooms/js-codec-ascii' ;
+> import base64 from '@aureooms/js-codec-base64' ;
+> let bytes = ascii.encode('any carnal pleasure');
+> base64.decode( bytes ) ;
+YW55IGNhcm5hbCBwbGVhc3VyZQ==
 ```
 
 [![License](https://img.shields.io/github/license/aureooms/js-codec-base64.svg?style=flat)](https://raw.githubusercontent.com/aureooms/js-codec-base64/master/LICENSE)
