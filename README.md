@@ -8,9 +8,15 @@ Parent is [@aureooms/js-codec](https://github.com/aureooms/js-codec).
 ```js
 > import ascii from '@aureooms/js-codec-ascii' ;
 > import base64 from '@aureooms/js-codec-base64' ;
-> let bytes = ascii.encode('any carnal pleasure');
+> let bytes = ascii.encode('any carnal pleasure') ;
 > base64.decode( bytes ) ;
-YW55IGNhcm5hbCBwbGVhc3VyZQ==
+'YW55IGNhcm5hbCBwbGVhc3VyZQ=='
+> base64.decode( bytes , { variant : 'RFC7515' } ) ;
+'YW55IGNhcm5hbCBwbGVhc3VyZQ'
+> base64.decode( bytes , { variant : 'Y64' } ) ;
+'YW55IGNhcm5hbCBwbGVhc3VyZQ--'
+> base64.decode( bytes , { alphabet : 'BCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/A' , padding : '.' } ) ;
+'ZX66JHOidn6icDCxcHWid4WzaR..'
 ```
 
 [![License](https://img.shields.io/github/license/aureooms/js-codec-base64.svg?style=flat)](https://raw.githubusercontent.com/aureooms/js-codec-base64/master/LICENSE)
