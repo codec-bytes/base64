@@ -42,6 +42,8 @@ test( success , [ 0x41 , 0x61 ] , null , 'QWE=' ) ;
 test( success , [ 0x41 , 0x61 , 0x42 ] , null , 'QWFC' ) ;
 
 test( failure , [ -1 ] , null , Base64DecodeError , { start : 0 , end : 1 } ) ;
+test( failure , [ 0, -1 ] , null , Base64DecodeError , { start : 1 , end : 2 } ) ;
+test( failure , [ 0, 0, -1 ] , null , Base64DecodeError , { start : 2 , end : 3 } ) ;
 test( failure , [ 0xFF + 1 ] , null , Base64DecodeError , { start : 0 , end : 1 } ) ;
 test( failure , [ ...range(0xFF + 2) ] , null , Base64DecodeError , { start : 256 , end : 257 } ) ;
 
