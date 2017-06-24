@@ -1,0 +1,100 @@
+{
+  "coverage": "0%",
+  "expectCount": 15,
+  "actualCount": 0,
+  "files": {
+    "src/Base64DecodeError.js": {
+      "expectCount": 2,
+      "actualCount": 0,
+      "undocumentLines": [
+        3,
+        5
+      ]
+    },
+    "src/Base64EncodeError.js": {
+      "expectCount": 2,
+      "actualCount": 0,
+      "undocumentLines": [
+        3,
+        5
+      ]
+    },
+    "src/_decode.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        13
+      ]
+    },
+    "src/_encode.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        14
+      ]
+    },
+    "src/byte1tochar2.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        1
+      ]
+    },
+    "src/byte2tochar3.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        1
+      ]
+    },
+    "src/byte3tochar4.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        1
+      ]
+    },
+    "src/char2tobyte1.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        1
+      ]
+    },
+    "src/char3tobyte2.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        1
+      ]
+    },
+    "src/char4tobyte3.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        1
+      ]
+    },
+    "src/decode.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        4
+      ]
+    },
+    "src/encode.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        4
+      ]
+    },
+    "src/variants.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        5
+      ]
+    }
+  }
+}

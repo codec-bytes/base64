@@ -1,0 +1,1431 @@
+[
+  {
+    "__docId__": 0,
+    "kind": "file",
+    "name": "src/Base64DecodeError.js",
+    "content": "import { DecodeError } from '@aureooms/js-codec' ;\n\nexport default class Base64DecodeError extends DecodeError {\n\n\tconstructor ( reason , object , position ) {\n\t\tsuper( 'base64' , reason , object , position ) ;\n\t}\n\n}\n",
+    "static": true,
+    "longname": "src/Base64DecodeError.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 1,
+    "kind": "class",
+    "name": "Base64DecodeError",
+    "memberof": "src/Base64DecodeError.js",
+    "static": true,
+    "longname": "src/Base64DecodeError.js~Base64DecodeError",
+    "access": null,
+    "export": true,
+    "importPath": "@aureooms/js-codec-base64/src/Base64DecodeError.js",
+    "importStyle": "Base64DecodeError",
+    "description": null,
+    "lineNumber": 3,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "interface": false,
+    "extends": [
+      "@aureooms/js-codec~DecodeError"
+    ]
+  },
+  {
+    "__docId__": 2,
+    "kind": "constructor",
+    "name": "constructor",
+    "memberof": "src/Base64DecodeError.js~Base64DecodeError",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Base64DecodeError.js~Base64DecodeError#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "name": "reason",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "object",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "position",
+        "types": [
+          "*"
+        ]
+      }
+    ]
+  },
+  {
+    "__docId__": 3,
+    "kind": "file",
+    "name": "src/Base64EncodeError.js",
+    "content": "import { EncodeError } from '@aureooms/js-codec' ;\n\nexport default class Base64EncodeError extends EncodeError {\n\n\tconstructor ( reason , object , position ) {\n\t\tsuper( 'base64' , reason , object , position ) ;\n\t}\n\n}\n\n",
+    "static": true,
+    "longname": "src/Base64EncodeError.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 4,
+    "kind": "class",
+    "name": "Base64EncodeError",
+    "memberof": "src/Base64EncodeError.js",
+    "static": true,
+    "longname": "src/Base64EncodeError.js~Base64EncodeError",
+    "access": null,
+    "export": true,
+    "importPath": "@aureooms/js-codec-base64/src/Base64EncodeError.js",
+    "importStyle": "Base64EncodeError",
+    "description": null,
+    "lineNumber": 3,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "interface": false,
+    "extends": [
+      "@aureooms/js-codec~EncodeError"
+    ]
+  },
+  {
+    "__docId__": 5,
+    "kind": "constructor",
+    "name": "constructor",
+    "memberof": "src/Base64EncodeError.js~Base64EncodeError",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Base64EncodeError.js~Base64EncodeError#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "name": "reason",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "object",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "position",
+        "types": [
+          "*"
+        ]
+      }
+    ]
+  },
+  {
+    "__docId__": 6,
+    "kind": "file",
+    "name": "src/DEFAULT_OPTIONS.js",
+    "content": "import variants from './variants' ;\n\nexport default variants['RFC4648'] ;\n",
+    "static": true,
+    "longname": "src/DEFAULT_OPTIONS.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 7,
+    "kind": "file",
+    "name": "src/_decode.js",
+    "content": "import { iter , next , StopIteration } from '@aureooms/js-itertools' ;\nimport { ValueError } from '@aureooms/js-error' ;\n\nimport byte3tochar4 from './byte3tochar4' ;\nimport byte2tochar3 from './byte2tochar3' ;\nimport byte1tochar2 from './byte1tochar2' ;\n\nimport Base64DecodeError from './Base64DecodeError' ;\n\nimport variants from './variants' ;\nimport DEFAULT_OPTIONS from './DEFAULT_OPTIONS' ;\n\nexport default function* _decode ( bytes , options = DEFAULT_OPTIONS ) {\n\n\tif ( options.variant ) {\n\t\tif ( variants.hasOwnProperty(options.variant) ) {\n\t\t\toptions = variants[options.variant] ;\n\t\t}\n\t\telse {\n\t\t\tthrow new ValueError( `unknown Base64 variant ${options.variant}` ) ;\n\t\t}\n\t}\n\n\tlet start = 0 ;\n\n\tconst { alphabet , padding } = options ;\n\n\tconst it = iter(bytes) ;\n\n\twhile ( true ) {\n\n\t\tlet a, b, c;\n\n\t\ttry {\n\t\t\ta = next( it ) ;\n\t\t}\n\t\tcatch ( e ) {\n\t\t\tif ( e instanceof StopIteration ) break ;\n\t\t\telse throw e ;\n\t\t}\n\n\t\tif ( a < 0x00 || a > 0xFF ) {\n\t\t\tconst reason = `byte out of range 0x00 <= ${a} <= 0xFF` ;\n\t\t\tconst position = { start : start , end : start + 1 } ;\n\t\t\tthrow new Base64DecodeError( reason , bytes , position ) ;\n\t\t}\n\n\t\t++start;\n\n\t\ttry {\n\t\t\tb = next( it ) ;\n\t\t}\n\t\tcatch ( e ) {\n\t\t\tif ( e instanceof StopIteration ) {\n\t\t\t\tyield* byte1tochar2(alphabet, a);\n\t\t\t\tif (padding) {\n\t\t\t\t\tyield padding;\n\t\t\t\t\tyield padding;\n\t\t\t\t}\n\t\t\t\tbreak;\n\t\t\t}\n\t\t\telse throw e ;\n\t\t}\n\n\t\tif ( b < 0x00 || b > 0xFF ) {\n\t\t\tconst reason = `byte out of range 0x00 <= ${b} <= 0xFF` ;\n\t\t\tconst position = { start : start , end : start + 1 } ;\n\t\t\tthrow new Base64DecodeError( reason , bytes , position ) ;\n\t\t}\n\n\t\t++start;\n\n\t\ttry {\n\t\t\tc = next( it ) ;\n\t\t}\n\t\tcatch ( e ) {\n\t\t\tif ( e instanceof StopIteration ) {\n\t\t\t\tyield* byte2tochar3(alphabet, a, b);\n\t\t\t\tif (padding) {\n\t\t\t\t\tyield padding;\n\t\t\t\t}\n\t\t\t\tbreak;\n\t\t\t}\n\t\t\telse throw e ;\n\t\t}\n\n\t\tif ( c < 0x00 || c > 0xFF ) {\n\t\t\tconst reason = `byte out of range 0x00 <= ${c} <= 0xFF` ;\n\t\t\tconst position = { start : start , end : start + 1 } ;\n\t\t\tthrow new Base64DecodeError( reason , bytes , position ) ;\n\t\t}\n\n\t\tyield* byte3tochar4(alphabet, a, b, c);\n\n\t\t++start;\n\n\t}\n\n}\n",
+    "static": true,
+    "longname": "src/_decode.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 8,
+    "kind": "function",
+    "name": "_decode",
+    "memberof": "src/_decode.js",
+    "generator": true,
+    "async": false,
+    "static": true,
+    "longname": "src/_decode.js~_decode",
+    "access": null,
+    "export": true,
+    "importPath": "@aureooms/js-codec-base64/src/_decode.js",
+    "importStyle": "_decode",
+    "description": null,
+    "lineNumber": 13,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "name": "bytes",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "options",
+        "optional": true,
+        "types": [
+          "*"
+        ],
+        "defaultRaw": "DEFAULT_OPTIONS",
+        "defaultValue": "DEFAULT_OPTIONS"
+      }
+    ]
+  },
+  {
+    "__docId__": 9,
+    "kind": "file",
+    "name": "src/_encode.js",
+    "content": "import { iter , next , StopIteration , enumerate } from '@aureooms/js-itertools' ;\nimport { object , reflect } from '@aureooms/js-mapping' ;\nimport { ValueError } from '@aureooms/js-error' ;\n\nimport char4tobyte3 from './char4tobyte3' ;\nimport char3tobyte2 from './char3tobyte2' ;\nimport char2tobyte1 from './char2tobyte1' ;\n\nimport Base64EncodeError from './Base64EncodeError' ;\n\nimport variants from './variants' ;\nimport DEFAULT_OPTIONS from './DEFAULT_OPTIONS' ;\n\nexport default function* _encode ( string , options = DEFAULT_OPTIONS ) {\n\n\tif ( options.variant ) {\n\t\tif ( variants.hasOwnProperty(options.variant) ) {\n\t\t\toptions = variants[options.variant] ;\n\t\t}\n\t\telse {\n\t\t\tthrow new ValueError( `unknown Base64 variant ${options.variant}` ) ;\n\t\t}\n\t}\n\n\tlet start = 0 ;\n\n\tconst index = options.index || object( reflect( enumerate( options.alphabet ) ) ) ;\n\tconst padding = options.padding ;\n\n\tconst it = iter(string) ;\n\n\twhile ( true ) {\n\n\t\tlet a, b, c, d ;\n\n\t\tlet stop = 4 ;\n\n\t\ttry {\n\t\t\ta = next( it ) ;\n\t\t}\n\t\tcatch ( e ) {\n\t\t\tif ( e instanceof StopIteration ) break ;\n\t\t\telse throw e ;\n\t\t}\n\n\t\ttry {\n\t\t\tb = next( it ) ;\n\t\t}\n\t\tcatch ( e ) {\n\t\t\tif ( e instanceof StopIteration ) {\n\t\t\t\tconst reason = `lone character ${a}` ;\n\t\t\t\tconst position = { start : start , end : start + 1 } ;\n\t\t\t\tthrow new Base64EncodeError( reason , string , position ) ;\n\t\t\t}\n\t\t\telse throw e ;\n\t\t}\n\n\t\ttry {\n\t\t\tc = next( it ) ;\n\t\t}\n\t\tcatch ( e ) {\n\t\t\tif ( e instanceof StopIteration ) {\n\t\t\t\tif ( padding ) {\n\t\t\t\t\tconst reason = `missing padding after ${a}${b}` ;\n\t\t\t\t\tconst position = { start : start , end : start + 2 } ;\n\t\t\t\t\tthrow new Base64EncodeError( reason , string , position ) ;\n\t\t\t\t}\n\t\t\t\tstop = 2 ;\n\t\t\t}\n\t\t\telse throw e ;\n\t\t}\n\n\t\tif ( stop === 4 ) {\n\t\t\ttry {\n\t\t\t\td = next( it ) ;\n\t\t\t}\n\t\t\tcatch ( e ) {\n\t\t\t\tif ( e instanceof StopIteration ) {\n\t\t\t\t\tif ( padding ) {\n\t\t\t\t\t\tconst reason = `missing padding after ${a}${b}${c}` ;\n\t\t\t\t\t\tconst position = { start : start , end : start + 3 } ;\n\t\t\t\t\t\tthrow new Base64EncodeError( reason , string , position ) ;\n\t\t\t\t\t}\n\t\t\t\t\tstop = 3 ;\n\t\t\t\t}\n\t\t\t\telse throw e ;\n\t\t\t}\n\t\t}\n\n\t\tif ( padding ) {\n\t\t\tstop = [a, b, c, d].indexOf(padding) ;\n\t\t\tstop = stop === -1 ? 4 : stop ;\n\t\t\tif ( stop < 2 ) {\n\t\t\t\tconst reason = `padding at wrong position in ${a}${b}${c}${d}` ;\n\t\t\t\tconst position = { start : start + stop , end : start + stop + 1 } ;\n\t\t\t\tthrow new Base64EncodeError( reason , string , position ) ;\n\t\t\t}\n\t\t\tif ( stop === 2 && d !== padding ) {\n\t\t\t\tconst reason = `incorrect padding end in ${a}${b}${c}${d}` ;\n\t\t\t\tconst position = { start : start + 3 , end : start + 4 } ;\n\t\t\t\tthrow new Base64EncodeError( reason , string , position ) ;\n\t\t\t}\n\t\t}\n\n\t\tif ( !index.hasOwnProperty(a) ) {\n\t\t\tconst reason = `not in alphabet ${a}` ;\n\t\t\tconst position = { start : start , end : start + 1 } ;\n \t\t\tthrow new Base64EncodeError( reason , string , position ) ;\n\t\t}\n\n\t\tif ( !index.hasOwnProperty(b) ) {\n\t\t\tconst reason = `not in alphabet ${b}` ;\n\t\t\tconst position = { start : start + 1 , end : start + 2 } ;\n \t\t\tthrow new Base64EncodeError( reason , string , position ) ;\n\t\t}\n\n\t\tif ( stop > 2 ) {\n\n\t\t\tif ( !index.hasOwnProperty(c) ) {\n\t\t\t\tconst reason = `not in alphabet ${c}` ;\n\t\t\t\tconst position = { start : start + 2 , end : start + 3 } ;\n\t\t\t\tthrow new Base64EncodeError( reason , string , position ) ;\n\t\t\t}\n\n\t\t\tif ( stop > 3 ) {\n\n\t\t\t\tif ( !index.hasOwnProperty(d) ) {\n\t\t\t\t\tconst reason = `not in alphabet ${d}` ;\n\t\t\t\t\tconst position = { start : start + 3 , end : start + 4 } ;\n\t\t\t\t\tthrow new Base64EncodeError( reason , string , position ) ;\n\t\t\t\t}\n\n\t\t\t}\n\n\t\t\telse {\n\t\t\t\tif ( index[c] & 3 ) {\n\t\t\t\t\tconst reason = `trailing bits in ${a}${b}${c}, last digit should be ${options.alphabet[index[c] & 63 << 2]}` ;\n\t\t\t\t\tconst position = { start : start + 2 , end : start + 3 } ;\n\t\t\t\t\tthrow new Base64EncodeError( reason , string , position ) ;\n\t\t\t\t}\n\t\t\t}\n\n\t\t}\n\n\t\telse {\n\t\t\tif ( index[b] & 15 ) {\n\t\t\t\tconst reason = `trailing bits in ${a}${b}, last digit should be ${options.alphabet[index[b] & 3 << 4]}` ;\n\t\t\t\tconst position = { start : start + 1 , end : start + 2 } ;\n\t\t\t\tthrow new Base64EncodeError( reason , string , position ) ;\n\t\t\t}\n\t\t}\n\n\t\tswitch ( stop ) {\n\t\t\tcase 4:\n\t\t\t\tyield* char4tobyte3(index, a, b, c, d) ;\n\t\t\t\tbreak;\n\t\t\tcase 3:\n\t\t\t\tyield* char3tobyte2(index, a, b, c) ;\n\t\t\t\tbreak;\n\t\t\tcase 2:\n\t\t\t\tyield* char2tobyte1(index, a, b) ;\n\t\t\t\tbreak;\n\t\t}\n\n\t\tstart += 4 ;\n\n\t}\n\n}\n",
+    "static": true,
+    "longname": "src/_encode.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 10,
+    "kind": "function",
+    "name": "_encode",
+    "memberof": "src/_encode.js",
+    "generator": true,
+    "async": false,
+    "static": true,
+    "longname": "src/_encode.js~_encode",
+    "access": null,
+    "export": true,
+    "importPath": "@aureooms/js-codec-base64/src/_encode.js",
+    "importStyle": "_encode",
+    "description": null,
+    "lineNumber": 14,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "name": "string",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "options",
+        "optional": true,
+        "types": [
+          "*"
+        ],
+        "defaultRaw": "DEFAULT_OPTIONS",
+        "defaultValue": "DEFAULT_OPTIONS"
+      }
+    ]
+  },
+  {
+    "__docId__": 11,
+    "kind": "file",
+    "name": "src/byte1tochar2.js",
+    "content": "export default function* byte1tochar2 ( alphabet , a ) {\n\tyield alphabet[      a >> 2 ] ;\n\tyield alphabet[ 63 & a << 4 ] ;\n}\n",
+    "static": true,
+    "longname": "src/byte1tochar2.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 12,
+    "kind": "function",
+    "name": "byte1tochar2",
+    "memberof": "src/byte1tochar2.js",
+    "generator": true,
+    "async": false,
+    "static": true,
+    "longname": "src/byte1tochar2.js~byte1tochar2",
+    "access": null,
+    "export": true,
+    "importPath": "@aureooms/js-codec-base64/src/byte1tochar2.js",
+    "importStyle": "byte1tochar2",
+    "description": null,
+    "lineNumber": 1,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "name": "alphabet",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "a",
+        "types": [
+          "*"
+        ]
+      }
+    ]
+  },
+  {
+    "__docId__": 13,
+    "kind": "file",
+    "name": "src/byte2tochar3.js",
+    "content": "export default function* byte2tochar3 ( alphabet , a , b ) {\n\tyield alphabet[      a >> 2          ] ;\n\tyield alphabet[ 63 & a << 4 | b >> 4 ] ;\n\tyield alphabet[ 63 &          b << 2 ] ;\n}\n",
+    "static": true,
+    "longname": "src/byte2tochar3.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 14,
+    "kind": "function",
+    "name": "byte2tochar3",
+    "memberof": "src/byte2tochar3.js",
+    "generator": true,
+    "async": false,
+    "static": true,
+    "longname": "src/byte2tochar3.js~byte2tochar3",
+    "access": null,
+    "export": true,
+    "importPath": "@aureooms/js-codec-base64/src/byte2tochar3.js",
+    "importStyle": "byte2tochar3",
+    "description": null,
+    "lineNumber": 1,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "name": "alphabet",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "a",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "b",
+        "types": [
+          "*"
+        ]
+      }
+    ]
+  },
+  {
+    "__docId__": 15,
+    "kind": "file",
+    "name": "src/byte3tochar4.js",
+    "content": "export default function* byte3tochar4 ( alphabet , a , b , c ) {\n\tyield alphabet[      a >> 2                   ] ;\n\tyield alphabet[ 63 & a << 4 | b >> 4          ] ;\n\tyield alphabet[ 63 &          b << 2 | c >> 6 ] ;\n\tyield alphabet[ 63 &                   c      ] ;\n}\n",
+    "static": true,
+    "longname": "src/byte3tochar4.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 16,
+    "kind": "function",
+    "name": "byte3tochar4",
+    "memberof": "src/byte3tochar4.js",
+    "generator": true,
+    "async": false,
+    "static": true,
+    "longname": "src/byte3tochar4.js~byte3tochar4",
+    "access": null,
+    "export": true,
+    "importPath": "@aureooms/js-codec-base64/src/byte3tochar4.js",
+    "importStyle": "byte3tochar4",
+    "description": null,
+    "lineNumber": 1,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "name": "alphabet",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "a",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "b",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "c",
+        "types": [
+          "*"
+        ]
+      }
+    ]
+  },
+  {
+    "__docId__": 17,
+    "kind": "file",
+    "name": "src/char2tobyte1.js",
+    "content": "export default function* char2tobyte1 ( index , a , b ) {\n\n\tyield        index[a] << 2 | index[b] >> 4 ;\n\n}\n",
+    "static": true,
+    "longname": "src/char2tobyte1.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 18,
+    "kind": "function",
+    "name": "char2tobyte1",
+    "memberof": "src/char2tobyte1.js",
+    "generator": true,
+    "async": false,
+    "static": true,
+    "longname": "src/char2tobyte1.js~char2tobyte1",
+    "access": null,
+    "export": true,
+    "importPath": "@aureooms/js-codec-base64/src/char2tobyte1.js",
+    "importStyle": "char2tobyte1",
+    "description": null,
+    "lineNumber": 1,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "name": "index",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "a",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "b",
+        "types": [
+          "*"
+        ]
+      }
+    ]
+  },
+  {
+    "__docId__": 19,
+    "kind": "file",
+    "name": "src/char3tobyte2.js",
+    "content": "export default function* char3tobyte2 ( index , a , b , c ) {\n\n\tyield        index[a] << 2 | index[b] >> 4 ;\n\tyield 0xFF & index[b] << 4 | index[c] >> 2 ;\n\n}\n",
+    "static": true,
+    "longname": "src/char3tobyte2.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 20,
+    "kind": "function",
+    "name": "char3tobyte2",
+    "memberof": "src/char3tobyte2.js",
+    "generator": true,
+    "async": false,
+    "static": true,
+    "longname": "src/char3tobyte2.js~char3tobyte2",
+    "access": null,
+    "export": true,
+    "importPath": "@aureooms/js-codec-base64/src/char3tobyte2.js",
+    "importStyle": "char3tobyte2",
+    "description": null,
+    "lineNumber": 1,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "name": "index",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "a",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "b",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "c",
+        "types": [
+          "*"
+        ]
+      }
+    ]
+  },
+  {
+    "__docId__": 21,
+    "kind": "file",
+    "name": "src/char4tobyte3.js",
+    "content": "export default function* char4tobyte3 ( index , a , b , c , d ) {\n\n\tyield        index[a] << 2 | index[b] >> 4 ;\n\tyield 0xFF & index[b] << 4 | index[c] >> 2 ;\n\tyield 0xFF & index[c] << 6 | index[d] ;\n\n}\n",
+    "static": true,
+    "longname": "src/char4tobyte3.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 22,
+    "kind": "function",
+    "name": "char4tobyte3",
+    "memberof": "src/char4tobyte3.js",
+    "generator": true,
+    "async": false,
+    "static": true,
+    "longname": "src/char4tobyte3.js~char4tobyte3",
+    "access": null,
+    "export": true,
+    "importPath": "@aureooms/js-codec-base64/src/char4tobyte3.js",
+    "importStyle": "char4tobyte3",
+    "description": null,
+    "lineNumber": 1,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "name": "index",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "a",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "b",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "c",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "d",
+        "types": [
+          "*"
+        ]
+      }
+    ]
+  },
+  {
+    "__docId__": 23,
+    "kind": "file",
+    "name": "src/decode.js",
+    "content": "import _decode from './_decode' ;\nimport DEFAULT_OPTIONS from './DEFAULT_OPTIONS' ;\n\nexport default function decode ( bytes , options = DEFAULT_OPTIONS ) {\n\n\treturn [ ..._decode(bytes, options) ].join('') ;\n\n}\n",
+    "static": true,
+    "longname": "src/decode.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 24,
+    "kind": "function",
+    "name": "decode",
+    "memberof": "src/decode.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/decode.js~decode",
+    "access": null,
+    "export": true,
+    "importPath": "@aureooms/js-codec-base64/src/decode.js",
+    "importStyle": "decode",
+    "description": null,
+    "lineNumber": 4,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "name": "bytes",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "options",
+        "optional": true,
+        "types": [
+          "*"
+        ],
+        "defaultRaw": "DEFAULT_OPTIONS",
+        "defaultValue": "DEFAULT_OPTIONS"
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 25,
+    "kind": "file",
+    "name": "src/encode.js",
+    "content": "import _encode from './_encode' ;\nimport DEFAULT_OPTIONS from './DEFAULT_OPTIONS' ;\n\nexport default function encode ( bytes , options = DEFAULT_OPTIONS ) {\n\n\treturn [ ..._encode(bytes, options) ] ;\n\n}\n",
+    "static": true,
+    "longname": "src/encode.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 26,
+    "kind": "function",
+    "name": "encode",
+    "memberof": "src/encode.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/encode.js~encode",
+    "access": null,
+    "export": true,
+    "importPath": "@aureooms/js-codec-base64/src/encode.js",
+    "importStyle": "encode",
+    "description": null,
+    "lineNumber": 4,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "name": "bytes",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "options",
+        "optional": true,
+        "types": [
+          "*"
+        ],
+        "defaultRaw": "DEFAULT_OPTIONS",
+        "defaultValue": "DEFAULT_OPTIONS"
+      }
+    ],
+    "return": {
+      "types": [
+        "undefined[]"
+      ]
+    }
+  },
+  {
+    "__docId__": 27,
+    "kind": "file",
+    "name": "src/index.js",
+    "content": "import Base64DecodeError from './Base64DecodeError' ;\nimport Base64EncodeError from './Base64EncodeError' ;\nimport DEFAULT_OPTIONS from './DEFAULT_OPTIONS' ;\nimport _decode from './_decode' ;\nimport _encode from './_encode' ;\nimport byte1tochar2 from './byte1tochar2' ;\nimport byte2tochar3 from './byte2tochar3' ;\nimport byte3tochar4 from './byte3tochar4' ;\nimport char2tobyte1 from './char2tobyte1' ;\nimport char3tobyte2 from './char3tobyte2' ;\nimport char4tobyte3 from './char4tobyte3' ;\nimport decode from './decode' ;\nimport encode from './encode' ;\nimport variants from './variants' ;\n\nexport default {\n\tdecode ,\n\tencode ,\n} ;\n\nexport {\n\tBase64DecodeError ,\n\tBase64EncodeError ,\n\tDEFAULT_OPTIONS ,\n\t_decode ,\n\t_encode ,\n\tbyte1tochar2 ,\n\tbyte2tochar3 ,\n\tbyte3tochar4 ,\n\tchar2tobyte1 ,\n\tchar3tobyte2 ,\n\tchar4tobyte3 ,\n\tdecode ,\n\tencode ,\n\tvariants ,\n} ;\n",
+    "static": true,
+    "longname": "src/index.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 28,
+    "kind": "file",
+    "name": "src/variants.js",
+    "content": "import { enumerate } from '@aureooms/js-itertools' ;\n\nimport { object , reflect } from '@aureooms/js-mapping' ;\n\nconst variants = {\n\n\t// standard\n\t'RFC4648' : {\n\t\t'alphabet' : 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/' ,\n\t\t'padding' : '=' ,\n\t} ,\n\n\t// unpadded base64url\n\t'RFC7515' : {\n\t\t'alphabet' : 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_' ,\n\t\t'padding' : false ,\n\t} ,\n\n\t// YUI library\n\t'Y64' : {\n\t\t'alphabet' : 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._' ,\n\t\t'padding' : '-' ,\n\t} ,\n\n\t// IMAP mailbox names\n\t'RFC3501' : {\n\t\t'alphabet' : 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+,' ,\n\t\t'padding' : false ,\n\t} ,\n\n} ;\n\nfor ( const variant in variants ) {\n\tvariants[variant].index = object( reflect( enumerate( variants[variant].alphabet ) ) ) ;\n}\n\nexport default variants ;\n",
+    "static": true,
+    "longname": "src/variants.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 29,
+    "kind": "variable",
+    "name": "variants",
+    "memberof": "src/variants.js",
+    "static": true,
+    "longname": "src/variants.js~variants",
+    "access": null,
+    "export": true,
+    "importPath": "@aureooms/js-codec-base64/src/variants.js",
+    "importStyle": "variants",
+    "description": null,
+    "lineNumber": 5,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "{\"RFC4648\": *, \"RFC7515\": *, \"Y64\": *, \"RFC3501\": *}"
+      ]
+    }
+  },
+  {
+    "__docId__": 31,
+    "kind": "external",
+    "name": "Infinity",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Infinity",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Infinity",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 32,
+    "kind": "external",
+    "name": "NaN",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NaN",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~NaN",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 33,
+    "kind": "external",
+    "name": "undefined",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~undefined",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 34,
+    "kind": "external",
+    "name": "null",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~null",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 35,
+    "kind": "external",
+    "name": "Object",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Object",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 36,
+    "kind": "external",
+    "name": "object",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~object",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 37,
+    "kind": "external",
+    "name": "Function",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Function",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 38,
+    "kind": "external",
+    "name": "function",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~function",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 39,
+    "kind": "external",
+    "name": "Boolean",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Boolean",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 40,
+    "kind": "external",
+    "name": "boolean",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~boolean",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 41,
+    "kind": "external",
+    "name": "Symbol",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Symbol",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 42,
+    "kind": "external",
+    "name": "Error",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Error",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 43,
+    "kind": "external",
+    "name": "EvalError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/EvalError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~EvalError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 44,
+    "kind": "external",
+    "name": "InternalError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/InternalError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~InternalError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 45,
+    "kind": "external",
+    "name": "RangeError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RangeError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~RangeError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 46,
+    "kind": "external",
+    "name": "ReferenceError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~ReferenceError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 47,
+    "kind": "external",
+    "name": "SyntaxError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SyntaxError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~SyntaxError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 48,
+    "kind": "external",
+    "name": "TypeError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~TypeError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 49,
+    "kind": "external",
+    "name": "URIError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/URIError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~URIError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 50,
+    "kind": "external",
+    "name": "Number",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Number",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 51,
+    "kind": "external",
+    "name": "number",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~number",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 52,
+    "kind": "external",
+    "name": "Date",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Date",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 53,
+    "kind": "external",
+    "name": "String",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~String",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 54,
+    "kind": "external",
+    "name": "string",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~string",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 55,
+    "kind": "external",
+    "name": "RegExp",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~RegExp",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 56,
+    "kind": "external",
+    "name": "Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 57,
+    "kind": "external",
+    "name": "Int8Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int8Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int8Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 58,
+    "kind": "external",
+    "name": "Uint8Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint8Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 59,
+    "kind": "external",
+    "name": "Uint8ClampedArray",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint8ClampedArray",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 60,
+    "kind": "external",
+    "name": "Int16Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int16Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int16Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 61,
+    "kind": "external",
+    "name": "Uint16Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint16Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint16Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 62,
+    "kind": "external",
+    "name": "Int32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int32Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 63,
+    "kind": "external",
+    "name": "Uint32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint32Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 64,
+    "kind": "external",
+    "name": "Float32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Float32Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 65,
+    "kind": "external",
+    "name": "Float64Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float64Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Float64Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 66,
+    "kind": "external",
+    "name": "Map",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Map",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 67,
+    "kind": "external",
+    "name": "Set",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Set",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 68,
+    "kind": "external",
+    "name": "WeakMap",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~WeakMap",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 69,
+    "kind": "external",
+    "name": "WeakSet",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~WeakSet",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 70,
+    "kind": "external",
+    "name": "ArrayBuffer",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~ArrayBuffer",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 71,
+    "kind": "external",
+    "name": "DataView",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~DataView",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 72,
+    "kind": "external",
+    "name": "JSON",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~JSON",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 73,
+    "kind": "external",
+    "name": "Promise",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Promise",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 74,
+    "kind": "external",
+    "name": "Generator",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Generator",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 75,
+    "kind": "external",
+    "name": "GeneratorFunction",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/GeneratorFunction",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~GeneratorFunction",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 76,
+    "kind": "external",
+    "name": "Reflect",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Reflect",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 77,
+    "kind": "external",
+    "name": "Proxy",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Proxy",
+    "access": null,
+    "description": "",
+    "lineNumber": 193,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 79,
+    "kind": "external",
+    "name": "CanvasRenderingContext2D",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 80,
+    "kind": "external",
+    "name": "DocumentFragment",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~DocumentFragment",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 81,
+    "kind": "external",
+    "name": "Element",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Element",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~Element",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 82,
+    "kind": "external",
+    "name": "Event",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Event",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~Event",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 83,
+    "kind": "external",
+    "name": "Node",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Node",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~Node",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 84,
+    "kind": "external",
+    "name": "NodeList",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/NodeList",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~NodeList",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 85,
+    "kind": "external",
+    "name": "XMLHttpRequest",
+    "externalLink": "https://developer.mozilla.org/en/docs/Web/API/XMLHttpRequest",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~XMLHttpRequest",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 86,
+    "kind": "external",
+    "name": "AudioContext",
+    "externalLink": "https://developer.mozilla.org/en/docs/Web/API/AudioContext",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~AudioContext",
+    "access": null,
+    "description": "",
+    "lineNumber": 34,
+    "builtinExternal": true
+  }
+]
