@@ -70,11 +70,16 @@ test( from_ascii ,
 	'Man is distinguished, not only by his reason, but by this singular passion from other animals, which is a lust of the mind, that by a perseverance of delight in the continued and indefatigable generation of knowledge, exceeds the short vehemence of any carnal pleasure.'
 ) ;
 
+test( success , '/A==' ,              undefined , [ 0xFC ] ) ;
+test( success , '_A'   , { variant : 'RFC7515'} , [ 0xFC ] ) ;
+test( success , '_A--' , { variant : 'Y64'}     , [ 0xFC ] ) ;
+test( success , ',A'   , { variant : 'RFC3501'} , [ 0xFC ] ) ;
+
 test( success , '/+A=' ,              undefined , [ 0xFF , 0xE0 ] ) ;
 test( success , '_-A'  , { variant : 'RFC7515'} , [ 0xFF , 0xE0 ] ) ;
 test( success , '_.A-' , { variant : 'Y64'}     , [ 0xFF , 0xE0 ] ) ;
 test( success , ',+A'  , { variant : 'RFC3501'} , [ 0xFF , 0xE0 ] ) ;
 
-test( success , '$*A'  , { alphabet : 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789*$'} , [ 0xFF , 0xE0 ] ) ;
+test( success , '$*A'  , { alphabet : 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789*$' } , [ 0xFF , 0xE0 ] ) ;
 
 test( failure , '' , { variant : '?' } , ValueError ) ;
