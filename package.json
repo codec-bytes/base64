@@ -23,6 +23,7 @@
     "url": "https://github.com/aureooms/js-codec-base64/issues"
   },
   "dependencies": {
+    "@aureooms/js-codec": "^2.0.0",
     "@aureooms/js-error": "^3.0.0",
     "@aureooms/js-itertools": "^3.3.0",
     "@aureooms/js-mapping": "^3.1.0"
