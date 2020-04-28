@@ -27,8 +27,8 @@
     "url": "https://github.com/aureooms/js-codec-base64/issues"
   },
   "dependencies": {
-    "@aureooms/js-codec": "^2.0.0",
-    "@aureooms/js-error": "^3.0.0",
+    "@aureooms/js-codec": "^3.0.0",
+    "@aureooms/js-error": "^4.0.0",
     "@aureooms/js-itertools": "^3.4.0",
     "@aureooms/js-mapping": "^3.1.0"
   },
@@ -40,9 +40,9 @@
     "@babel/preset-env": "^7.9.5",
     "@babel/register": "7.9.0",
     "ava": "^3.8.1",
-    "coveralls": "^3.0.2",
+    "coveralls": "^3.1.0",
     "esdoc": "^1.1.0",
-    "np": "^3.0.4",
+    "np": "^6.2.3",
     "nyc": "^15.0.1",
     "esdoc-inject-script-plugin": "1.0.0",
     "esdoc-inject-style-plugin": "1.0.0",
