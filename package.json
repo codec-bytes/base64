@@ -70,5 +70,8 @@
     "release": "np",
     "test": "ava",
     "esdoc": "esdoc"
-  }
+  },
+  "files": [
+    "lib"
+  ]
 }
