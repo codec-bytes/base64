@@ -55,7 +55,6 @@ test( failure , 'A$$$' , undefined , Base64EncodeError , { start : 1 , end : 2 }
 test( failure , 'AA$$' , undefined , Base64EncodeError , { start : 2 , end : 3 } ) ;
 test( failure , 'AAA$' , undefined , Base64EncodeError , { start : 3 , end : 4 } ) ;
 test( failure , 'AAAA=' , undefined , Base64EncodeError , { start : 4 , end : 5 } ) ;
-test( failure , 'AAAA=' , undefined , Base64EncodeError , { start : 4 , end : 5 } ) ;
 test( failure , '====' , undefined , Base64EncodeError , { start : 0 , end : 1 } ) ;
 test( failure , 'Q===' , undefined , Base64EncodeError , { start : 1 , end : 2 } ) ;
 test( failure , 'QW' , undefined , Base64EncodeError , { start : 0 , end : 2 } ) ;
