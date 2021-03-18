@@ -16,6 +16,13 @@
   dependencies:
     "@aureooms/js-error" "^4.0.0"
 
+"@aureooms/js-codec@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@aureooms/js-codec/-/js-codec-4.0.0.tgz#909f0c07ced6a3bb604ce4cfd6a4ee6a2870067e"
+  integrity sha512-CnxP4uSwvqWDNQTbihBVc3Y3VEzBHaxu5zV+jkwVleyxuLOhYH+5joZl2NIHmCkizsapZHKLnDnw3EJP2sQmwg==
+  dependencies:
+    "@aureooms/js-error" "^5.0.2"
+
 "@aureooms/js-collections-deque@^6.0.1":
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/@aureooms/js-collections-deque/-/js-collections-deque-6.0.1.tgz#ba89379ac826539047f768e1fb84ed4d2c1f829e"
