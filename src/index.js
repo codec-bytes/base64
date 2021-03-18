@@ -13,6 +13,7 @@ import decode from './decode' ;
 import encode from './encode' ;
 import variants from './variants' ;
 
+/* eslint import/no-anonymous-default-export: [2, {"allowObject": true}] */
 export default {
 	decode ,
 	encode ,
