@@ -7,35 +7,35 @@ const variants = {
 	RFC4648: {
 		alphabet:
 			'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/',
-		padding: '='
+		padding: '=',
 	},
 
 	// Unpadded base64url
 	RFC7515: {
 		alphabet:
 			'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_',
-		padding: false
+		padding: false,
 	},
 
 	// YUI library
 	Y64: {
 		alphabet:
 			'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._',
-		padding: '-'
+		padding: '-',
 	},
 
 	// IMAP mailbox names
 	RFC3501: {
 		alphabet:
 			'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+,',
-		padding: false
-	}
+		padding: false,
+	},
 };
 
 for (const variant in variants) {
 	if (Object.prototype.hasOwnProperty.call(variants, variant)) {
 		variants[variant].index = object(
-			reflect(enumerate(variants[variant].alphabet))
+			reflect(enumerate(variants[variant].alphabet)),
 		);
 	}
 }

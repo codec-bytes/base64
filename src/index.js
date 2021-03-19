@@ -16,7 +16,7 @@ import variants from './variants.js';
 /* eslint import/no-anonymous-default-export: [2, {"allowObject": true}] */
 export default {
 	decode,
-	encode
+	encode,
 };
 
 export {
@@ -33,5 +33,5 @@ export {
 	char4tobyte3,
 	decode,
 	encode,
-	variants
+	variants,
 };

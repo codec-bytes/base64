@@ -24,7 +24,7 @@ fromASCII.title = success.title;
 
 function failure(t, bytes, options, ExpectedError, position) {
 	const error = t.throws(() => decode(bytes, options), {
-		instanceOf: ExpectedError
+		instanceOf: ExpectedError,
 	});
 
 	if (position) {
@@ -50,35 +50,35 @@ test(failure, [0, 0, -1], undefined, Base64DecodeError, {start: 2, end: 3});
 test(failure, [0xff + 1], undefined, Base64DecodeError, {start: 0, end: 1});
 test(failure, [...range(0xff + 2)], undefined, Base64DecodeError, {
 	start: 256,
-	end: 257
+	end: 257,
 });
 
 test(
 	fromASCII,
 	'Man is distinguished, not only by his reason, but by this singular passion from other animals, which is a lust of the mind, that by a perseverance of delight in the continued and indefatigable generation of knowledge, exceeds the short vehemence of any carnal pleasure.',
 	undefined,
-	'TWFuIGlzIGRpc3Rpbmd1aXNoZWQsIG5vdCBvbmx5IGJ5IGhpcyByZWFzb24sIGJ1dCBieSB0aGlzIHNpbmd1bGFyIHBhc3Npb24gZnJvbSBvdGhlciBhbmltYWxzLCB3aGljaCBpcyBhIGx1c3Qgb2YgdGhlIG1pbmQsIHRoYXQgYnkgYSBwZXJzZXZlcmFuY2Ugb2YgZGVsaWdodCBpbiB0aGUgY29udGludWVkIGFuZCBpbmRlZmF0aWdhYmxlIGdlbmVyYXRpb24gb2Yga25vd2xlZGdlLCBleGNlZWRzIHRoZSBzaG9ydCB2ZWhlbWVuY2Ugb2YgYW55IGNhcm5hbCBwbGVhc3VyZS4='
+	'TWFuIGlzIGRpc3Rpbmd1aXNoZWQsIG5vdCBvbmx5IGJ5IGhpcyByZWFzb24sIGJ1dCBieSB0aGlzIHNpbmd1bGFyIHBhc3Npb24gZnJvbSBvdGhlciBhbmltYWxzLCB3aGljaCBpcyBhIGx1c3Qgb2YgdGhlIG1pbmQsIHRoYXQgYnkgYSBwZXJzZXZlcmFuY2Ugb2YgZGVsaWdodCBpbiB0aGUgY29udGludWVkIGFuZCBpbmRlZmF0aWdhYmxlIGdlbmVyYXRpb24gb2Yga25vd2xlZGdlLCBleGNlZWRzIHRoZSBzaG9ydCB2ZWhlbWVuY2Ugb2YgYW55IGNhcm5hbCBwbGVhc3VyZS4=',
 );
 
 test(
 	fromASCII,
 	'any carnal pleasure',
 	undefined,
-	'YW55IGNhcm5hbCBwbGVhc3VyZQ=='
+	'YW55IGNhcm5hbCBwbGVhc3VyZQ==',
 );
 
 test(
 	fromASCII,
 	'any carnal pleasure',
 	{variant: 'RFC7515'},
-	'YW55IGNhcm5hbCBwbGVhc3VyZQ'
+	'YW55IGNhcm5hbCBwbGVhc3VyZQ',
 );
 
 test(
 	fromASCII,
 	'any carnal pleasure',
 	{variant: 'Y64'},
-	'YW55IGNhcm5hbCBwbGVhc3VyZQ--'
+	'YW55IGNhcm5hbCBwbGVhc3VyZQ--',
 );
 
 test(success, [0xff, 0xe0], undefined, '/+A=');
