@@ -1,10 +1,7 @@
-import { EncodeError } from '@aureooms/js-codec' ;
+import {EncodeError} from '@aureooms/js-codec';
 
 export default class Base64EncodeError extends EncodeError {
-
-	constructor ( reason , object , position ) {
-		super( 'base64' , reason , object , position ) ;
+	constructor(reason, object, position) {
+		super('base64', reason, object, position);
 	}
-
 }
-
