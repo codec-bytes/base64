@@ -21,7 +21,7 @@ Parent is [@aureooms/js-codec](https://github.com/aureooms/js-codec).
 
 [![License](https://img.shields.io/github/license/aureooms/js-codec-base64.svg)](https://raw.githubusercontent.com/aureooms/js-codec-base64/main/LICENSE)
 [![Version](https://img.shields.io/npm/v/@aureooms/js-codec-base64.svg)](https://www.npmjs.org/package/@aureooms/js-codec-base64)
-[![Build](https://img.shields.io/travis/aureooms/js-codec-base64/main.svg)](https://travis-ci.org/aureooms/js-codec-base64/branches)
+[![Build](https://img.shields.io/travis/aureooms/js-codec-base64/main.svg)](https://travis-ci.com/aureooms/js-codec-base64/branches)
 [![Dependencies](https://img.shields.io/david/aureooms/js-codec-base64.svg)](https://david-dm.org/aureooms/js-codec-base64)
 [![Dev dependencies](https://img.shields.io/david/dev/aureooms/js-codec-base64.svg)](https://david-dm.org/aureooms/js-codec-base64?type=dev)
 [![GitHub issues](https://img.shields.io/github/issues/aureooms/js-codec-base64.svg)](https://github.com/aureooms/js-codec-base64/issues)
