@@ -47,11 +47,9 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/char3tobyte2.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">export default function* char3tobyte2 ( index , a , b , c ) {
-
-	yield        index[a] &lt;&lt; 2 | index[b] &gt;&gt; 4 ;
-	yield 0xFF &amp; index[b] &lt;&lt; 4 | index[c] &gt;&gt; 2 ;
-
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">export default function* char3tobyte2(index, a, b, c) {
+	yield (index[a] &lt;&lt; 2) | (index[b] &gt;&gt; 4);
+	yield (0xff &amp; (index[b] &lt;&lt; 4)) | (index[c] &gt;&gt; 2);
 }
 </code></pre>
 

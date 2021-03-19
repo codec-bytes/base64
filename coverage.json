@@ -8,7 +8,7 @@
       "actualCount": 0,
       "undocumentLines": [
         3,
-        5
+        4
       ]
     },
     "src/Base64EncodeError.js": {
@@ -16,7 +16,7 @@
       "actualCount": 0,
       "undocumentLines": [
         3,
-        5
+        4
       ]
     },
     "src/_decode.js": {
@@ -30,7 +30,7 @@
       "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
-        14
+        15
       ]
     },
     "src/byte1tochar2.js": {

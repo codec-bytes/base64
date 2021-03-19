@@ -47,9 +47,9 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/byte1tochar2.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">export default function* byte1tochar2 ( alphabet , a ) {
-	yield alphabet[      a &gt;&gt; 2 ] ;
-	yield alphabet[ 63 &amp; a &lt;&lt; 4 ] ;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">export default function* byte1tochar2(alphabet, a) {
+	yield alphabet[a &gt;&gt; 2];
+	yield alphabet[63 &amp; (a &lt;&lt; 4)];
 }
 </code></pre>
 

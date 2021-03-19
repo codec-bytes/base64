@@ -47,43 +47,49 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/variants.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { enumerate } from &apos;@aureooms/js-itertools&apos; ;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import {enumerate} from &apos;@aureooms/js-itertools&apos;;
 
-import { object , reflect } from &apos;@aureooms/js-mapping&apos; ;
+import {object, reflect} from &apos;@aureooms/js-mapping&apos;;
 
 const variants = {
+	// Standard
+	RFC4648: {
+		alphabet:
+			&apos;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/&apos;,
+		padding: &apos;=&apos;,
+	},
 
-	// standard
-	&apos;RFC4648&apos; : {
-		&apos;alphabet&apos; : &apos;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/&apos; ,
-		&apos;padding&apos; : &apos;=&apos; ,
-	} ,
-
-	// unpadded base64url
-	&apos;RFC7515&apos; : {
-		&apos;alphabet&apos; : &apos;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_&apos; ,
-		&apos;padding&apos; : false ,
-	} ,
+	// Unpadded base64url
+	RFC7515: {
+		alphabet:
+			&apos;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_&apos;,
+		padding: false,
+	},
 
 	// YUI library
-	&apos;Y64&apos; : {
-		&apos;alphabet&apos; : &apos;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._&apos; ,
-		&apos;padding&apos; : &apos;-&apos; ,
-	} ,
+	Y64: {
+		alphabet:
+			&apos;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._&apos;,
+		padding: &apos;-&apos;,
+	},
 
 	// IMAP mailbox names
-	&apos;RFC3501&apos; : {
-		&apos;alphabet&apos; : &apos;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+,&apos; ,
-		&apos;padding&apos; : false ,
-	} ,
+	RFC3501: {
+		alphabet:
+			&apos;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+,&apos;,
+		padding: false,
+	},
+};
 
-} ;
-
-for ( const variant in variants ) {
-	variants[variant].index = object( reflect( enumerate( variants[variant].alphabet ) ) ) ;
+for (const variant in variants) {
+	if (Object.prototype.hasOwnProperty.call(variants, variant)) {
+		variants[variant].index = object(
+			reflect(enumerate(variants[variant].alphabet)),
+		);
+	}
 }
 
-export default variants ;
+export default variants;
 </code></pre>
 
 </div>

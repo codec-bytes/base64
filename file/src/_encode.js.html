@@ -47,174 +47,172 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/_encode.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { iter , next , StopIteration , enumerate } from &apos;@aureooms/js-itertools&apos; ;
-import { object , reflect } from &apos;@aureooms/js-mapping&apos; ;
-import { ValueError } from &apos;@aureooms/js-error&apos; ;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import assert from &apos;assert&apos;;
+import {iter, next, StopIteration, enumerate} from &apos;@aureooms/js-itertools&apos;;
+import {object, reflect} from &apos;@aureooms/js-mapping&apos;;
+import {ValueError} from &apos;@aureooms/js-error&apos;;
 
-import char4tobyte3 from &apos;./char4tobyte3&apos; ;
-import char3tobyte2 from &apos;./char3tobyte2&apos; ;
-import char2tobyte1 from &apos;./char2tobyte1&apos; ;
+import char4tobyte3 from &apos;./char4tobyte3.js&apos;;
+import char3tobyte2 from &apos;./char3tobyte2.js&apos;;
+import char2tobyte1 from &apos;./char2tobyte1.js&apos;;
 
-import Base64EncodeError from &apos;./Base64EncodeError&apos; ;
+import Base64EncodeError from &apos;./Base64EncodeError.js&apos;;
 
-import variants from &apos;./variants&apos; ;
-import DEFAULT_OPTIONS from &apos;./DEFAULT_OPTIONS&apos; ;
+import variants from &apos;./variants.js&apos;;
+import DEFAULT_OPTIONS from &apos;./DEFAULT_OPTIONS.js&apos;;
 
-export default function* _encode ( string , options = DEFAULT_OPTIONS ) {
-
-	if ( options.variant ) {
-		if ( variants.hasOwnProperty(options.variant) ) {
-			options = variants[options.variant] ;
-		}
-		else {
-			throw new ValueError( `unknown Base64 variant ${options.variant}` ) ;
+export default function* _encode(string, options = DEFAULT_OPTIONS) {
+	if (options.variant) {
+		if (Object.prototype.hasOwnProperty.call(variants, options.variant)) {
+			options = variants[options.variant];
+		} else {
+			throw new ValueError(`unknown Base64 variant ${options.variant}`);
 		}
 	}
 
-	let start = 0 ;
+	let start = 0;
 
-	const index = options.index || object( reflect( enumerate( options.alphabet ) ) ) ;
-	const padding = options.padding ;
+	const index = options.index || object(reflect(enumerate(options.alphabet)));
+	const padding = options.padding;
 
-	const it = iter(string) ;
+	const it = iter(string);
 
-	while ( true ) {
+	while (true) {
+		let a;
+		let b;
+		let c;
+		let d;
 
-		let a, b, c, d ;
-
-		let stop = 4 ;
-
-		try {
-			a = next( it ) ;
-		}
-		catch ( e ) {
-			if ( e instanceof StopIteration ) break ;
-			else throw e ;
-		}
+		let stop = 4;
 
 		try {
-			b = next( it ) ;
-		}
-		catch ( e ) {
-			if ( e instanceof StopIteration ) {
-				const reason = `lone character ${a}` ;
-				const position = { start : start , end : start + 1 } ;
-				throw new Base64EncodeError( reason , string , position ) ;
+			a = next(it);
+		} catch (error) {
+			if (error instanceof StopIteration) {
+				break;
+			} else {
+				throw error;
 			}
-			else throw e ;
 		}
 
 		try {
-			c = next( it ) ;
+			b = next(it);
+		} catch (error) {
+			if (error instanceof StopIteration) {
+				const reason = `lone character ${a}`;
+				const position = {start, end: start + 1};
+				throw new Base64EncodeError(reason, string, position);
+			} else {
+				throw error;
+			}
 		}
-		catch ( e ) {
-			if ( e instanceof StopIteration ) {
-				if ( padding ) {
-					const reason = `missing padding after ${a}${b}` ;
-					const position = { start : start , end : start + 2 } ;
-					throw new Base64EncodeError( reason , string , position ) ;
+
+		try {
+			c = next(it);
+		} catch (error) {
+			if (error instanceof StopIteration) {
+				if (padding) {
+					const reason = `missing padding after ${a}${b}`;
+					const position = {start, end: start + 2};
+					throw new Base64EncodeError(reason, string, position);
 				}
-				stop = 2 ;
+
+				stop = 2;
+			} else {
+				throw error;
 			}
-			else throw e ;
 		}
 
-		if ( stop === 4 ) {
+		if (stop === 4) {
 			try {
-				d = next( it ) ;
-			}
-			catch ( e ) {
-				if ( e instanceof StopIteration ) {
-					if ( padding ) {
-						const reason = `missing padding after ${a}${b}${c}` ;
-						const position = { start : start , end : start + 3 } ;
-						throw new Base64EncodeError( reason , string , position ) ;
+				d = next(it);
+			} catch (error) {
+				if (error instanceof StopIteration) {
+					if (padding) {
+						const reason = `missing padding after ${a}${b}${c}`;
+						const position = {start, end: start + 3};
+						throw new Base64EncodeError(reason, string, position);
 					}
-					stop = 3 ;
-				}
-				else throw e ;
-			}
-		}
 
-		if ( padding ) {
-			stop = [a, b, c, d].indexOf(padding) ;
-			stop = stop === -1 ? 4 : stop ;
-			if ( stop &lt; 2 ) {
-				const reason = `padding at wrong position in ${a}${b}${c}${d}` ;
-				const position = { start : start + stop , end : start + stop + 1 } ;
-				throw new Base64EncodeError( reason , string , position ) ;
-			}
-			if ( stop === 2 &amp;&amp; d !== padding ) {
-				const reason = `incorrect padding end in ${a}${b}${c}${d}` ;
-				const position = { start : start + 3 , end : start + 4 } ;
-				throw new Base64EncodeError( reason , string , position ) ;
-			}
-		}
-
-		if ( !index.hasOwnProperty(a) ) {
-			const reason = `not in alphabet ${a}` ;
-			const position = { start : start , end : start + 1 } ;
- 			throw new Base64EncodeError( reason , string , position ) ;
-		}
-
-		if ( !index.hasOwnProperty(b) ) {
-			const reason = `not in alphabet ${b}` ;
-			const position = { start : start + 1 , end : start + 2 } ;
- 			throw new Base64EncodeError( reason , string , position ) ;
-		}
-
-		if ( stop &gt; 2 ) {
-
-			if ( !index.hasOwnProperty(c) ) {
-				const reason = `not in alphabet ${c}` ;
-				const position = { start : start + 2 , end : start + 3 } ;
-				throw new Base64EncodeError( reason , string , position ) ;
-			}
-
-			if ( stop &gt; 3 ) {
-
-				if ( !index.hasOwnProperty(d) ) {
-					const reason = `not in alphabet ${d}` ;
-					const position = { start : start + 3 , end : start + 4 } ;
-					throw new Base64EncodeError( reason , string , position ) ;
-				}
-
-			}
-
-			else {
-				if ( index[c] &amp; 3 ) {
-					const reason = `trailing bits in ${a}${b}${c}, last digit should be ${options.alphabet[index[c] &amp; 63 &lt;&lt; 2]}` ;
-					const position = { start : start + 2 , end : start + 3 } ;
-					throw new Base64EncodeError( reason , string , position ) ;
+					stop = 3;
+				} else {
+					throw error;
 				}
 			}
-
 		}
 
-		else {
-			if ( index[b] &amp; 15 ) {
-				const reason = `trailing bits in ${a}${b}, last digit should be ${options.alphabet[index[b] &amp; 3 &lt;&lt; 4]}` ;
-				const position = { start : start + 1 , end : start + 2 } ;
-				throw new Base64EncodeError( reason , string , position ) ;
+		if (padding) {
+			stop = [a, b, c, d].indexOf(padding);
+			stop = stop === -1 ? 4 : stop;
+			if (stop &lt; 2) {
+				const reason = `padding at wrong position in ${a}${b}${c}${d}`;
+				const position = {start: start + stop, end: start + stop + 1};
+				throw new Base64EncodeError(reason, string, position);
+			}
+
+			if (stop === 2 &amp;&amp; d !== padding) {
+				const reason = `incorrect padding end in ${a}${b}${c}${d}`;
+				const position = {start: start + 3, end: start + 4};
+				throw new Base64EncodeError(reason, string, position);
 			}
 		}
 
-		switch ( stop ) {
+		if (!Object.prototype.hasOwnProperty.call(index, a)) {
+			const reason = `not in alphabet ${a}`;
+			const position = {start, end: start + 1};
+			throw new Base64EncodeError(reason, string, position);
+		}
+
+		if (!Object.prototype.hasOwnProperty.call(index, b)) {
+			const reason = `not in alphabet ${b}`;
+			const position = {start: start + 1, end: start + 2};
+			throw new Base64EncodeError(reason, string, position);
+		}
+
+		if (stop &gt; 2) {
+			if (!Object.prototype.hasOwnProperty.call(index, c)) {
+				const reason = `not in alphabet ${c}`;
+				const position = {start: start + 2, end: start + 3};
+				throw new Base64EncodeError(reason, string, position);
+			}
+
+			if (stop &gt; 3) {
+				if (!Object.prototype.hasOwnProperty.call(index, d)) {
+					const reason = `not in alphabet ${d}`;
+					const position = {start: start + 3, end: start + 4};
+					throw new Base64EncodeError(reason, string, position);
+				}
+			} else if (index[c] &amp; 3) {
+				const reason = `trailing bits in ${a}${b}${c}, last digit should be ${
+					options.alphabet[index[c] &amp; (63 &lt;&lt; 2)]
+				}`;
+				const position = {start: start + 2, end: start + 3};
+				throw new Base64EncodeError(reason, string, position);
+			}
+		} else if (index[b] &amp; 15) {
+			const reason = `trailing bits in ${a}${b}, last digit should be ${
+				options.alphabet[index[b] &amp; (3 &lt;&lt; 4)]
+			}`;
+			const position = {start: start + 1, end: start + 2};
+			throw new Base64EncodeError(reason, string, position);
+		}
+
+		switch (stop) {
 			case 4:
-				yield* char4tobyte3(index, a, b, c, d) ;
+				yield* char4tobyte3(index, a, b, c, d);
 				break;
 			case 3:
-				yield* char3tobyte2(index, a, b, c) ;
+				yield* char3tobyte2(index, a, b, c);
 				break;
 			case 2:
-				yield* char2tobyte1(index, a, b) ;
+				yield* char2tobyte1(index, a, b);
 				break;
+			default:
+				assert(false, `Unexpected stop value: ${stop}.`);
 		}
 
-		start += 4 ;
-
+		start += 4;
 	}
-
 }
 </code></pre>
 

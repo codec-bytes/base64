@@ -47,12 +47,10 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/char4tobyte3.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">export default function* char4tobyte3 ( index , a , b , c , d ) {
-
-	yield        index[a] &lt;&lt; 2 | index[b] &gt;&gt; 4 ;
-	yield 0xFF &amp; index[b] &lt;&lt; 4 | index[c] &gt;&gt; 2 ;
-	yield 0xFF &amp; index[c] &lt;&lt; 6 | index[d] ;
-
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">export default function* char4tobyte3(index, a, b, c, d) {
+	yield (index[a] &lt;&lt; 2) | (index[b] &gt;&gt; 4);
+	yield (0xff &amp; (index[b] &lt;&lt; 4)) | (index[c] &gt;&gt; 2);
+	yield (0xff &amp; (index[c] &lt;&lt; 6)) | index[d];
 }
 </code></pre>
 

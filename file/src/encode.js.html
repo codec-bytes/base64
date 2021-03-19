@@ -47,13 +47,11 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/encode.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _encode from &apos;./_encode&apos; ;
-import DEFAULT_OPTIONS from &apos;./DEFAULT_OPTIONS&apos; ;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _encode from &apos;./_encode.js&apos;;
+import DEFAULT_OPTIONS from &apos;./DEFAULT_OPTIONS.js&apos;;
 
-export default function encode ( bytes , options = DEFAULT_OPTIONS ) {
-
-	return [ ..._encode(bytes, options) ] ;
-
+export default function encode(bytes, options = DEFAULT_OPTIONS) {
+	return [..._encode(bytes, options)];
 }
 </code></pre>
 

@@ -47,13 +47,11 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/decode.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _decode from &apos;./_decode&apos; ;
-import DEFAULT_OPTIONS from &apos;./DEFAULT_OPTIONS&apos; ;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _decode from &apos;./_decode.js&apos;;
+import DEFAULT_OPTIONS from &apos;./DEFAULT_OPTIONS.js&apos;;
 
-export default function decode ( bytes , options = DEFAULT_OPTIONS ) {
-
-	return [ ..._decode(bytes, options) ].join(&apos;&apos;) ;
-
+export default function decode(bytes, options = DEFAULT_OPTIONS) {
+	return [..._decode(bytes, options)].join(&apos;&apos;);
 }
 </code></pre>
 

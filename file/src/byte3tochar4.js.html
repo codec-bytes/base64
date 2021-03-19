@@ -47,11 +47,11 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/byte3tochar4.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">export default function* byte3tochar4 ( alphabet , a , b , c ) {
-	yield alphabet[      a &gt;&gt; 2                   ] ;
-	yield alphabet[ 63 &amp; a &lt;&lt; 4 | b &gt;&gt; 4          ] ;
-	yield alphabet[ 63 &amp;          b &lt;&lt; 2 | c &gt;&gt; 6 ] ;
-	yield alphabet[ 63 &amp;                   c      ] ;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">export default function* byte3tochar4(alphabet, a, b, c) {
+	yield alphabet[a &gt;&gt; 2];
+	yield alphabet[(63 &amp; (a &lt;&lt; 4)) | (b &gt;&gt; 4)];
+	yield alphabet[(63 &amp; (b &lt;&lt; 2)) | (c &gt;&gt; 6)];
+	yield alphabet[63 &amp; c];
 }
 </code></pre>
 
