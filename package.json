@@ -70,7 +70,7 @@
     "test:src": "IMPORT_MAP_PATH=test/import-maps/src/index.json npm run test-cmd"
   },
   "dependencies": {
-    "@codec-bytes/error": "^5.0.0",
+    "@codec-bytes/error": "^5.0.1",
     "@failure-abstraction/error": "^6.0.1",
     "@iterable-iterator/iter": "^1.0.1",
     "@iterable-iterator/mapping": "^9.0.0",
