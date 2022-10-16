@@ -11,8 +11,11 @@ function success(t, bytes, options, expected) {
 	t.deepEqual(string, expected);
 }
 
-success.title = (_, bytes, options, _expected) =>
-	`decode '${bytes}' ${JSON.stringify(options)} succeed`;
+success.title = (title, bytes, options, expected) =>
+	title ??
+	`decode(${JSON.stringify(bytes)}, ${JSON.stringify(
+		options,
+	)})' == ${JSON.stringify(expected)}`;
 
 function fromASCII(t, string, options, expected) {
 	const bytes = ascii.encode(string);
@@ -35,8 +38,11 @@ function failure(t, bytes, options, ExpectedError, position) {
 	}
 }
 
-failure.title = (_, bytes, options, _expected) =>
-	`decode '${bytes}' ${JSON.stringify(options)} should fail`;
+failure.title = (title, bytes, options, expected) =>
+	title ??
+	`decode(${JSON.stringify(bytes)}, ${JSON.stringify(options)})' fails with ${
+		expected.name
+	}`;
 
 test(success, [], undefined, '');
 test(success, [0x41], undefined, 'QQ==');
