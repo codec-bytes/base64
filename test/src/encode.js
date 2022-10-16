@@ -1,7 +1,7 @@
 import test from 'ava';
 import * as ascii from '@codec-bytes/ascii';
 
-import {encode, Base64EncodeError} from '../../src/index.js';
+import {encode, Base64EncodeError} from '#module';
 import {ValueError, CodecError} from './_fixtures.js';
 
 function success(t, string, options, expected) {

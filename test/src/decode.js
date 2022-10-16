@@ -2,7 +2,7 @@ import test from 'ava';
 import * as ascii from '@codec-bytes/ascii';
 import {range} from '@iterable-iterator/range';
 
-import {decode, Base64DecodeError} from '../../src/index.js';
+import {decode, Base64DecodeError} from '#module';
 import {ValueError, CodecError} from './_fixtures.js';
 
 function success(t, bytes, options, expected) {
