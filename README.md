@@ -18,7 +18,7 @@ base64.decode(bytes, {alphabet: 'BCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuv
 
 [![License](https://img.shields.io/github/license/codec-bytes/base64.svg)](https://raw.githubusercontent.com/codec-bytes/base64/main/LICENSE)
 [![Version](https://img.shields.io/npm/v/@codec-bytes/base64.svg)](https://www.npmjs.org/package/@codec-bytes/base64)
-[![Build](https://img.shields.io/travis/codec-bytes/base64/main.svg)](https://travis-ci.com/codec-bytes/base64/branches)
+[![Tests](https://img.shields.io/github/workflow/status/codec-bytes/base64/ci:test?event=push&label=tests)](https://github.com/codec-bytes/base64/actions/workflows/ci:test.yml?query=branch:main)
 [![Dependencies](https://img.shields.io/librariesio/github/codec-bytes/base64.svg)](https://github.com/codec-bytes/base64/network/dependencies)
 [![GitHub issues](https://img.shields.io/github/issues/codec-bytes/base64.svg)](https://github.com/codec-bytes/base64/issues)
 [![Downloads](https://img.shields.io/npm/dm/@codec-bytes/base64.svg)](https://www.npmjs.org/package/@codec-bytes/base64)
