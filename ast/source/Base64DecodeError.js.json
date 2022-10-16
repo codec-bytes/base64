@@ -108,10 +108,10 @@
             }
           },
           "extra": {
-            "rawValue": "@aureooms/js-codec",
-            "raw": "'@aureooms/js-codec'"
+            "rawValue": "@codec-bytes/error",
+            "raw": "'@codec-bytes/error'"
           },
-          "value": "@aureooms/js-codec"
+          "value": "@codec-bytes/error"
         }
       },
       {
@@ -573,7 +573,7 @@
         "binop": null,
         "updateContext": null
       },
-      "value": "@aureooms/js-codec",
+      "value": "@codec-bytes/error",
       "start": 26,
       "end": 46,
       "loc": {

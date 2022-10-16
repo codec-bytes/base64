@@ -1,80 +1,80 @@
 window.esdocSearchIndex = [
   [
-    "@aureooms/js-codec-base64/src/base64decodeerror.js~base64decodeerror",
+    "@codec-bytes/base64/src/base64decodeerror.js~base64decodeerror",
     "class/src/Base64DecodeError.js~Base64DecodeError.html",
-    "<span>Base64DecodeError</span> <span class=\"search-result-import-path\">@aureooms/js-codec-base64/src/Base64DecodeError.js</span>",
+    "<span>Base64DecodeError</span> <span class=\"search-result-import-path\">@codec-bytes/base64/src/Base64DecodeError.js</span>",
     "class"
   ],
   [
-    "@aureooms/js-codec-base64/src/base64encodeerror.js~base64encodeerror",
+    "@codec-bytes/base64/src/base64encodeerror.js~base64encodeerror",
     "class/src/Base64EncodeError.js~Base64EncodeError.html",
-    "<span>Base64EncodeError</span> <span class=\"search-result-import-path\">@aureooms/js-codec-base64/src/Base64EncodeError.js</span>",
+    "<span>Base64EncodeError</span> <span class=\"search-result-import-path\">@codec-bytes/base64/src/Base64EncodeError.js</span>",
     "class"
   ],
   [
-    "@aureooms/js-codec-base64/src/_decode.js~_decode",
+    "@codec-bytes/base64/src/_decode.js~_decode",
     "function/index.html#static-function-_decode",
-    "<span>_decode</span> <span class=\"search-result-import-path\">@aureooms/js-codec-base64/src/_decode.js</span>",
+    "<span>_decode</span> <span class=\"search-result-import-path\">@codec-bytes/base64/src/_decode.js</span>",
     "function"
   ],
   [
-    "@aureooms/js-codec-base64/src/_encode.js~_encode",
+    "@codec-bytes/base64/src/_encode.js~_encode",
     "function/index.html#static-function-_encode",
-    "<span>_encode</span> <span class=\"search-result-import-path\">@aureooms/js-codec-base64/src/_encode.js</span>",
+    "<span>_encode</span> <span class=\"search-result-import-path\">@codec-bytes/base64/src/_encode.js</span>",
     "function"
   ],
   [
-    "@aureooms/js-codec-base64/src/byte1tochar2.js~byte1tochar2",
+    "@codec-bytes/base64/src/byte1tochar2.js~byte1tochar2",
     "function/index.html#static-function-byte1tochar2",
-    "<span>byte1tochar2</span> <span class=\"search-result-import-path\">@aureooms/js-codec-base64/src/byte1tochar2.js</span>",
+    "<span>byte1tochar2</span> <span class=\"search-result-import-path\">@codec-bytes/base64/src/byte1tochar2.js</span>",
     "function"
   ],
   [
-    "@aureooms/js-codec-base64/src/byte2tochar3.js~byte2tochar3",
+    "@codec-bytes/base64/src/byte2tochar3.js~byte2tochar3",
     "function/index.html#static-function-byte2tochar3",
-    "<span>byte2tochar3</span> <span class=\"search-result-import-path\">@aureooms/js-codec-base64/src/byte2tochar3.js</span>",
+    "<span>byte2tochar3</span> <span class=\"search-result-import-path\">@codec-bytes/base64/src/byte2tochar3.js</span>",
     "function"
   ],
   [
-    "@aureooms/js-codec-base64/src/byte3tochar4.js~byte3tochar4",
+    "@codec-bytes/base64/src/byte3tochar4.js~byte3tochar4",
     "function/index.html#static-function-byte3tochar4",
-    "<span>byte3tochar4</span> <span class=\"search-result-import-path\">@aureooms/js-codec-base64/src/byte3tochar4.js</span>",
+    "<span>byte3tochar4</span> <span class=\"search-result-import-path\">@codec-bytes/base64/src/byte3tochar4.js</span>",
     "function"
   ],
   [
-    "@aureooms/js-codec-base64/src/char2tobyte1.js~char2tobyte1",
+    "@codec-bytes/base64/src/char2tobyte1.js~char2tobyte1",
     "function/index.html#static-function-char2tobyte1",
-    "<span>char2tobyte1</span> <span class=\"search-result-import-path\">@aureooms/js-codec-base64/src/char2tobyte1.js</span>",
+    "<span>char2tobyte1</span> <span class=\"search-result-import-path\">@codec-bytes/base64/src/char2tobyte1.js</span>",
     "function"
   ],
   [
-    "@aureooms/js-codec-base64/src/char3tobyte2.js~char3tobyte2",
+    "@codec-bytes/base64/src/char3tobyte2.js~char3tobyte2",
     "function/index.html#static-function-char3tobyte2",
-    "<span>char3tobyte2</span> <span class=\"search-result-import-path\">@aureooms/js-codec-base64/src/char3tobyte2.js</span>",
+    "<span>char3tobyte2</span> <span class=\"search-result-import-path\">@codec-bytes/base64/src/char3tobyte2.js</span>",
     "function"
   ],
   [
-    "@aureooms/js-codec-base64/src/char4tobyte3.js~char4tobyte3",
+    "@codec-bytes/base64/src/char4tobyte3.js~char4tobyte3",
     "function/index.html#static-function-char4tobyte3",
-    "<span>char4tobyte3</span> <span class=\"search-result-import-path\">@aureooms/js-codec-base64/src/char4tobyte3.js</span>",
+    "<span>char4tobyte3</span> <span class=\"search-result-import-path\">@codec-bytes/base64/src/char4tobyte3.js</span>",
     "function"
   ],
   [
-    "@aureooms/js-codec-base64/src/decode.js~decode",
+    "@codec-bytes/base64/src/decode.js~decode",
     "function/index.html#static-function-decode",
-    "<span>decode</span> <span class=\"search-result-import-path\">@aureooms/js-codec-base64/src/decode.js</span>",
+    "<span>decode</span> <span class=\"search-result-import-path\">@codec-bytes/base64/src/decode.js</span>",
     "function"
   ],
   [
-    "@aureooms/js-codec-base64/src/encode.js~encode",
+    "@codec-bytes/base64/src/encode.js~encode",
     "function/index.html#static-function-encode",
-    "<span>encode</span> <span class=\"search-result-import-path\">@aureooms/js-codec-base64/src/encode.js</span>",
+    "<span>encode</span> <span class=\"search-result-import-path\">@codec-bytes/base64/src/encode.js</span>",
     "function"
   ],
   [
-    "@aureooms/js-codec-base64/src/variants.js~variants",
+    "@codec-bytes/base64/src/variants.js~variants",
     "variable/index.html#static-variable-variants",
-    "<span>variants</span> <span class=\"search-result-import-path\">@aureooms/js-codec-base64/src/variants.js</span>",
+    "<span>variants</span> <span class=\"search-result-import-path\">@codec-bytes/base64/src/variants.js</span>",
     "variable"
   ],
   [

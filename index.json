@@ -567,9 +567,9 @@
     "__docId__": 48,
     "kind": "file",
     "name": "src/Base64DecodeError.js",
-    "content": "import {DecodeError} from '@aureooms/js-codec';\n\nexport default class Base64DecodeError extends DecodeError {\n\tconstructor(reason, object, position) {\n\t\tsuper('base64', reason, object, position);\n\t}\n}\n",
+    "content": "import {DecodeError} from '@codec-bytes/error';\n\nexport default class Base64DecodeError extends DecodeError {\n\tconstructor(reason, object, position) {\n\t\tsuper('base64', reason, object, position);\n\t}\n}\n",
     "static": true,
-    "longname": "/home/runner/work/js-codec-base64/js-codec-base64/src/Base64DecodeError.js",
+    "longname": "/home/runner/work/base64/base64/src/Base64DecodeError.js",
     "access": "public",
     "description": null,
     "lineNumber": 1
@@ -583,14 +583,14 @@
     "longname": "src/Base64DecodeError.js~Base64DecodeError",
     "access": "public",
     "export": true,
-    "importPath": "@aureooms/js-codec-base64/src/Base64DecodeError.js",
+    "importPath": "@codec-bytes/base64/src/Base64DecodeError.js",
     "importStyle": "Base64DecodeError",
     "description": null,
     "lineNumber": 3,
     "undocument": true,
     "interface": false,
     "extends": [
-      "@aureooms/js-codec~DecodeError"
+      "@codec-bytes/error~DecodeError"
     ]
   },
   {
@@ -611,9 +611,9 @@
     "__docId__": 51,
     "kind": "file",
     "name": "src/Base64EncodeError.js",
-    "content": "import {EncodeError} from '@aureooms/js-codec';\n\nexport default class Base64EncodeError extends EncodeError {\n\tconstructor(reason, object, position) {\n\t\tsuper('base64', reason, object, position);\n\t}\n}\n",
+    "content": "import {EncodeError} from '@codec-bytes/error';\n\nexport default class Base64EncodeError extends EncodeError {\n\tconstructor(reason, object, position) {\n\t\tsuper('base64', reason, object, position);\n\t}\n}\n",
     "static": true,
-    "longname": "/home/runner/work/js-codec-base64/js-codec-base64/src/Base64EncodeError.js",
+    "longname": "/home/runner/work/base64/base64/src/Base64EncodeError.js",
     "access": "public",
     "description": null,
     "lineNumber": 1
@@ -627,14 +627,14 @@
     "longname": "src/Base64EncodeError.js~Base64EncodeError",
     "access": "public",
     "export": true,
-    "importPath": "@aureooms/js-codec-base64/src/Base64EncodeError.js",
+    "importPath": "@codec-bytes/base64/src/Base64EncodeError.js",
     "importStyle": "Base64EncodeError",
     "description": null,
     "lineNumber": 3,
     "undocument": true,
     "interface": false,
     "extends": [
-      "@aureooms/js-codec~EncodeError"
+      "@codec-bytes/error~EncodeError"
     ]
   },
   {
@@ -657,7 +657,7 @@
     "name": "src/DEFAULT_OPTIONS.js",
     "content": "import variants from './variants.js';\n\nexport default variants.RFC4648;\n",
     "static": true,
-    "longname": "/home/runner/work/js-codec-base64/js-codec-base64/src/DEFAULT_OPTIONS.js",
+    "longname": "/home/runner/work/base64/base64/src/DEFAULT_OPTIONS.js",
     "access": "public",
     "description": null,
     "lineNumber": 1
@@ -666,9 +666,9 @@
     "__docId__": 55,
     "kind": "file",
     "name": "src/_decode.js",
-    "content": "import {iter, next, StopIteration} from '@aureooms/js-itertools';\nimport {ValueError} from '@aureooms/js-error';\n\nimport byte3tochar4 from './byte3tochar4.js';\nimport byte2tochar3 from './byte2tochar3.js';\nimport byte1tochar2 from './byte1tochar2.js';\n\nimport Base64DecodeError from './Base64DecodeError.js';\n\nimport variants from './variants.js';\nimport DEFAULT_OPTIONS from './DEFAULT_OPTIONS.js';\n\nexport default function* _decode(bytes, options = DEFAULT_OPTIONS) {\n\tif (options.variant) {\n\t\tif (Object.prototype.hasOwnProperty.call(variants, options.variant)) {\n\t\t\toptions = variants[options.variant];\n\t\t} else {\n\t\t\tthrow new ValueError(`unknown Base64 variant ${options.variant}`);\n\t\t}\n\t}\n\n\tlet start = 0;\n\n\tconst {alphabet, padding} = options;\n\n\tconst it = iter(bytes);\n\n\twhile (true) {\n\t\tlet a;\n\t\tlet b;\n\t\tlet c;\n\n\t\ttry {\n\t\t\ta = next(it);\n\t\t} catch (error) {\n\t\t\tif (error instanceof StopIteration) {\n\t\t\t\tbreak;\n\t\t\t} else {\n\t\t\t\tthrow error;\n\t\t\t}\n\t\t}\n\n\t\tif (a < 0x00 || a > 0xff) {\n\t\t\tconst reason = `byte out of range 0x00 <= ${a} <= 0xFF`;\n\t\t\tconst position = {start, end: start + 1};\n\t\t\tthrow new Base64DecodeError(reason, bytes, position);\n\t\t}\n\n\t\t++start;\n\n\t\ttry {\n\t\t\tb = next(it);\n\t\t} catch (error) {\n\t\t\tif (error instanceof StopIteration) {\n\t\t\t\tyield* byte1tochar2(alphabet, a);\n\t\t\t\tif (padding) {\n\t\t\t\t\tyield padding;\n\t\t\t\t\tyield padding;\n\t\t\t\t}\n\n\t\t\t\tbreak;\n\t\t\t} else {\n\t\t\t\tthrow error;\n\t\t\t}\n\t\t}\n\n\t\tif (b < 0x00 || b > 0xff) {\n\t\t\tconst reason = `byte out of range 0x00 <= ${b} <= 0xFF`;\n\t\t\tconst position = {start, end: start + 1};\n\t\t\tthrow new Base64DecodeError(reason, bytes, position);\n\t\t}\n\n\t\t++start;\n\n\t\ttry {\n\t\t\tc = next(it);\n\t\t} catch (error) {\n\t\t\tif (error instanceof StopIteration) {\n\t\t\t\tyield* byte2tochar3(alphabet, a, b);\n\t\t\t\tif (padding) {\n\t\t\t\t\tyield padding;\n\t\t\t\t}\n\n\t\t\t\tbreak;\n\t\t\t} else {\n\t\t\t\tthrow error;\n\t\t\t}\n\t\t}\n\n\t\tif (c < 0x00 || c > 0xff) {\n\t\t\tconst reason = `byte out of range 0x00 <= ${c} <= 0xFF`;\n\t\t\tconst position = {start, end: start + 1};\n\t\t\tthrow new Base64DecodeError(reason, bytes, position);\n\t\t}\n\n\t\tyield* byte3tochar4(alphabet, a, b, c);\n\n\t\t++start;\n\t}\n}\n",
+    "content": "import {iter} from '@iterable-iterator/iter';\nimport {next, StopIteration} from '@iterable-iterator/next';\nimport {ValueError} from '@failure-abstraction/error';\n\nimport byte3tochar4 from './byte3tochar4.js';\nimport byte2tochar3 from './byte2tochar3.js';\nimport byte1tochar2 from './byte1tochar2.js';\n\nimport Base64DecodeError from './Base64DecodeError.js';\n\nimport variants from './variants.js';\nimport DEFAULT_OPTIONS from './DEFAULT_OPTIONS.js';\n\nexport default function* _decode(bytes, options = DEFAULT_OPTIONS) {\n\tif (options.variant) {\n\t\tif (Object.prototype.hasOwnProperty.call(variants, options.variant)) {\n\t\t\toptions = variants[options.variant];\n\t\t} else {\n\t\t\tthrow new ValueError(`unknown Base64 variant ${options.variant}`);\n\t\t}\n\t}\n\n\tlet start = 0;\n\n\tconst {alphabet, padding} = options;\n\n\tconst it = iter(bytes);\n\n\twhile (true) {\n\t\tlet a;\n\t\tlet b;\n\t\tlet c;\n\n\t\ttry {\n\t\t\ta = next(it);\n\t\t} catch (error) {\n\t\t\tif (error instanceof StopIteration) {\n\t\t\t\tbreak;\n\t\t\t} else {\n\t\t\t\tthrow error;\n\t\t\t}\n\t\t}\n\n\t\tif (a < 0x00 || a > 0xff) {\n\t\t\tconst reason = `byte out of range 0x00 <= ${a} <= 0xFF`;\n\t\t\tconst position = {start, end: start + 1};\n\t\t\tthrow new Base64DecodeError(reason, bytes, position);\n\t\t}\n\n\t\t++start;\n\n\t\ttry {\n\t\t\tb = next(it);\n\t\t} catch (error) {\n\t\t\tif (error instanceof StopIteration) {\n\t\t\t\tyield* byte1tochar2(alphabet, a);\n\t\t\t\tif (padding) {\n\t\t\t\t\tyield padding;\n\t\t\t\t\tyield padding;\n\t\t\t\t}\n\n\t\t\t\tbreak;\n\t\t\t} else {\n\t\t\t\tthrow error;\n\t\t\t}\n\t\t}\n\n\t\tif (b < 0x00 || b > 0xff) {\n\t\t\tconst reason = `byte out of range 0x00 <= ${b} <= 0xFF`;\n\t\t\tconst position = {start, end: start + 1};\n\t\t\tthrow new Base64DecodeError(reason, bytes, position);\n\t\t}\n\n\t\t++start;\n\n\t\ttry {\n\t\t\tc = next(it);\n\t\t} catch (error) {\n\t\t\tif (error instanceof StopIteration) {\n\t\t\t\tyield* byte2tochar3(alphabet, a, b);\n\t\t\t\tif (padding) {\n\t\t\t\t\tyield padding;\n\t\t\t\t}\n\n\t\t\t\tbreak;\n\t\t\t} else {\n\t\t\t\tthrow error;\n\t\t\t}\n\t\t}\n\n\t\tif (c < 0x00 || c > 0xff) {\n\t\t\tconst reason = `byte out of range 0x00 <= ${c} <= 0xFF`;\n\t\t\tconst position = {start, end: start + 1};\n\t\t\tthrow new Base64DecodeError(reason, bytes, position);\n\t\t}\n\n\t\tyield* byte3tochar4(alphabet, a, b, c);\n\n\t\t++start;\n\t}\n}\n",
     "static": true,
-    "longname": "/home/runner/work/js-codec-base64/js-codec-base64/src/_decode.js",
+    "longname": "/home/runner/work/base64/base64/src/_decode.js",
     "access": "public",
     "description": null,
     "lineNumber": 1
@@ -684,10 +684,10 @@
     "longname": "src/_decode.js~_decode",
     "access": "private",
     "export": true,
-    "importPath": "@aureooms/js-codec-base64/src/_decode.js",
+    "importPath": "@codec-bytes/base64/src/_decode.js",
     "importStyle": "_decode",
     "description": null,
-    "lineNumber": 13,
+    "lineNumber": 14,
     "undocument": true,
     "params": [
       {
@@ -712,9 +712,9 @@
     "__docId__": 57,
     "kind": "file",
     "name": "src/_encode.js",
-    "content": "import assert from 'assert';\nimport {iter, next, StopIteration, enumerate} from '@aureooms/js-itertools';\nimport {object, reflect} from '@aureooms/js-mapping';\nimport {ValueError} from '@aureooms/js-error';\n\nimport char4tobyte3 from './char4tobyte3.js';\nimport char3tobyte2 from './char3tobyte2.js';\nimport char2tobyte1 from './char2tobyte1.js';\n\nimport Base64EncodeError from './Base64EncodeError.js';\n\nimport variants from './variants.js';\nimport DEFAULT_OPTIONS from './DEFAULT_OPTIONS.js';\n\nexport default function* _encode(string, options = DEFAULT_OPTIONS) {\n\tif (options.variant) {\n\t\tif (Object.prototype.hasOwnProperty.call(variants, options.variant)) {\n\t\t\toptions = variants[options.variant];\n\t\t} else {\n\t\t\tthrow new ValueError(`unknown Base64 variant ${options.variant}`);\n\t\t}\n\t}\n\n\tlet start = 0;\n\n\tconst index = options.index || object(reflect(enumerate(options.alphabet)));\n\tconst padding = options.padding;\n\n\tconst it = iter(string);\n\n\twhile (true) {\n\t\tlet a;\n\t\tlet b;\n\t\tlet c;\n\t\tlet d;\n\n\t\tlet stop = 4;\n\n\t\ttry {\n\t\t\ta = next(it);\n\t\t} catch (error) {\n\t\t\tif (error instanceof StopIteration) {\n\t\t\t\tbreak;\n\t\t\t} else {\n\t\t\t\tthrow error;\n\t\t\t}\n\t\t}\n\n\t\ttry {\n\t\t\tb = next(it);\n\t\t} catch (error) {\n\t\t\tif (error instanceof StopIteration) {\n\t\t\t\tconst reason = `lone character ${a}`;\n\t\t\t\tconst position = {start, end: start + 1};\n\t\t\t\tthrow new Base64EncodeError(reason, string, position);\n\t\t\t} else {\n\t\t\t\tthrow error;\n\t\t\t}\n\t\t}\n\n\t\ttry {\n\t\t\tc = next(it);\n\t\t} catch (error) {\n\t\t\tif (error instanceof StopIteration) {\n\t\t\t\tif (padding) {\n\t\t\t\t\tconst reason = `missing padding after ${a}${b}`;\n\t\t\t\t\tconst position = {start, end: start + 2};\n\t\t\t\t\tthrow new Base64EncodeError(reason, string, position);\n\t\t\t\t}\n\n\t\t\t\tstop = 2;\n\t\t\t} else {\n\t\t\t\tthrow error;\n\t\t\t}\n\t\t}\n\n\t\tif (stop === 4) {\n\t\t\ttry {\n\t\t\t\td = next(it);\n\t\t\t} catch (error) {\n\t\t\t\tif (error instanceof StopIteration) {\n\t\t\t\t\tif (padding) {\n\t\t\t\t\t\tconst reason = `missing padding after ${a}${b}${c}`;\n\t\t\t\t\t\tconst position = {start, end: start + 3};\n\t\t\t\t\t\tthrow new Base64EncodeError(reason, string, position);\n\t\t\t\t\t}\n\n\t\t\t\t\tstop = 3;\n\t\t\t\t} else {\n\t\t\t\t\tthrow error;\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\n\t\tif (padding) {\n\t\t\tstop = [a, b, c, d].indexOf(padding);\n\t\t\tstop = stop === -1 ? 4 : stop;\n\t\t\tif (stop < 2) {\n\t\t\t\tconst reason = `padding at wrong position in ${a}${b}${c}${d}`;\n\t\t\t\tconst position = {start: start + stop, end: start + stop + 1};\n\t\t\t\tthrow new Base64EncodeError(reason, string, position);\n\t\t\t}\n\n\t\t\tif (stop === 2 && d !== padding) {\n\t\t\t\tconst reason = `incorrect padding end in ${a}${b}${c}${d}`;\n\t\t\t\tconst position = {start: start + 3, end: start + 4};\n\t\t\t\tthrow new Base64EncodeError(reason, string, position);\n\t\t\t}\n\t\t}\n\n\t\tif (!Object.prototype.hasOwnProperty.call(index, a)) {\n\t\t\tconst reason = `not in alphabet ${a}`;\n\t\t\tconst position = {start, end: start + 1};\n\t\t\tthrow new Base64EncodeError(reason, string, position);\n\t\t}\n\n\t\tif (!Object.prototype.hasOwnProperty.call(index, b)) {\n\t\t\tconst reason = `not in alphabet ${b}`;\n\t\t\tconst position = {start: start + 1, end: start + 2};\n\t\t\tthrow new Base64EncodeError(reason, string, position);\n\t\t}\n\n\t\tif (stop > 2) {\n\t\t\tif (!Object.prototype.hasOwnProperty.call(index, c)) {\n\t\t\t\tconst reason = `not in alphabet ${c}`;\n\t\t\t\tconst position = {start: start + 2, end: start + 3};\n\t\t\t\tthrow new Base64EncodeError(reason, string, position);\n\t\t\t}\n\n\t\t\tif (stop > 3) {\n\t\t\t\tif (!Object.prototype.hasOwnProperty.call(index, d)) {\n\t\t\t\t\tconst reason = `not in alphabet ${d}`;\n\t\t\t\t\tconst position = {start: start + 3, end: start + 4};\n\t\t\t\t\tthrow new Base64EncodeError(reason, string, position);\n\t\t\t\t}\n\t\t\t} else if (index[c] & 3) {\n\t\t\t\tconst reason = `trailing bits in ${a}${b}${c}, last digit should be ${\n\t\t\t\t\toptions.alphabet[index[c] & (63 << 2)]\n\t\t\t\t}`;\n\t\t\t\tconst position = {start: start + 2, end: start + 3};\n\t\t\t\tthrow new Base64EncodeError(reason, string, position);\n\t\t\t}\n\t\t} else if (index[b] & 15) {\n\t\t\tconst reason = `trailing bits in ${a}${b}, last digit should be ${\n\t\t\t\toptions.alphabet[index[b] & (3 << 4)]\n\t\t\t}`;\n\t\t\tconst position = {start: start + 1, end: start + 2};\n\t\t\tthrow new Base64EncodeError(reason, string, position);\n\t\t}\n\n\t\tswitch (stop) {\n\t\t\tcase 4:\n\t\t\t\tyield* char4tobyte3(index, a, b, c, d);\n\t\t\t\tbreak;\n\t\t\tcase 3:\n\t\t\t\tyield* char3tobyte2(index, a, b, c);\n\t\t\t\tbreak;\n\t\t\tcase 2:\n\t\t\t\tyield* char2tobyte1(index, a, b);\n\t\t\t\tbreak;\n\t\t\tdefault:\n\t\t\t\tassert(false, `Unexpected stop value: ${stop}.`);\n\t\t}\n\n\t\tstart += 4;\n\t}\n}\n",
+    "content": "import assert from 'node:assert';\nimport {iter} from '@iterable-iterator/iter';\nimport {next, StopIteration} from '@iterable-iterator/next';\nimport {enumerate} from '@iterable-iterator/zip';\nimport {toObject, inverse} from '@iterable-iterator/mapping';\nimport {ValueError} from '@failure-abstraction/error';\n\nimport char4tobyte3 from './char4tobyte3.js';\nimport char3tobyte2 from './char3tobyte2.js';\nimport char2tobyte1 from './char2tobyte1.js';\n\nimport Base64EncodeError from './Base64EncodeError.js';\n\nimport variants from './variants.js';\nimport DEFAULT_OPTIONS from './DEFAULT_OPTIONS.js';\n\nexport default function* _encode(string, options = DEFAULT_OPTIONS) {\n\tif (options.variant) {\n\t\tif (Object.prototype.hasOwnProperty.call(variants, options.variant)) {\n\t\t\toptions = variants[options.variant];\n\t\t} else {\n\t\t\tthrow new ValueError(`unknown Base64 variant ${options.variant}`);\n\t\t}\n\t}\n\n\tlet start = 0;\n\n\tconst index = options.index || toObject(inverse(enumerate(options.alphabet)));\n\tconst padding = options.padding;\n\n\tconst it = iter(string);\n\n\twhile (true) {\n\t\tlet a;\n\t\tlet b;\n\t\tlet c;\n\t\tlet d;\n\n\t\tlet stop = 4;\n\n\t\ttry {\n\t\t\ta = next(it);\n\t\t} catch (error) {\n\t\t\tif (error instanceof StopIteration) {\n\t\t\t\tbreak;\n\t\t\t} else {\n\t\t\t\tthrow error;\n\t\t\t}\n\t\t}\n\n\t\ttry {\n\t\t\tb = next(it);\n\t\t} catch (error) {\n\t\t\tif (error instanceof StopIteration) {\n\t\t\t\tconst reason = `lone character ${a}`;\n\t\t\t\tconst position = {start, end: start + 1};\n\t\t\t\tthrow new Base64EncodeError(reason, string, position);\n\t\t\t} else {\n\t\t\t\tthrow error;\n\t\t\t}\n\t\t}\n\n\t\ttry {\n\t\t\tc = next(it);\n\t\t} catch (error) {\n\t\t\tif (error instanceof StopIteration) {\n\t\t\t\tif (padding) {\n\t\t\t\t\tconst reason = `missing padding after ${a}${b}`;\n\t\t\t\t\tconst position = {start, end: start + 2};\n\t\t\t\t\tthrow new Base64EncodeError(reason, string, position);\n\t\t\t\t}\n\n\t\t\t\tstop = 2;\n\t\t\t} else {\n\t\t\t\tthrow error;\n\t\t\t}\n\t\t}\n\n\t\tif (stop === 4) {\n\t\t\ttry {\n\t\t\t\td = next(it);\n\t\t\t} catch (error) {\n\t\t\t\tif (error instanceof StopIteration) {\n\t\t\t\t\tif (padding) {\n\t\t\t\t\t\tconst reason = `missing padding after ${a}${b}${c}`;\n\t\t\t\t\t\tconst position = {start, end: start + 3};\n\t\t\t\t\t\tthrow new Base64EncodeError(reason, string, position);\n\t\t\t\t\t}\n\n\t\t\t\t\tstop = 3;\n\t\t\t\t} else {\n\t\t\t\t\tthrow error;\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\n\t\tif (padding) {\n\t\t\tstop = [a, b, c, d].indexOf(padding);\n\t\t\tstop = stop === -1 ? 4 : stop;\n\t\t\tif (stop < 2) {\n\t\t\t\tconst reason = `padding at wrong position in ${a}${b}${c}${d}`;\n\t\t\t\tconst position = {start: start + stop, end: start + stop + 1};\n\t\t\t\tthrow new Base64EncodeError(reason, string, position);\n\t\t\t}\n\n\t\t\tif (stop === 2 && d !== padding) {\n\t\t\t\tconst reason = `incorrect padding end in ${a}${b}${c}${d}`;\n\t\t\t\tconst position = {start: start + 3, end: start + 4};\n\t\t\t\tthrow new Base64EncodeError(reason, string, position);\n\t\t\t}\n\t\t}\n\n\t\tif (!Object.prototype.hasOwnProperty.call(index, a)) {\n\t\t\tconst reason = `not in alphabet ${a}`;\n\t\t\tconst position = {start, end: start + 1};\n\t\t\tthrow new Base64EncodeError(reason, string, position);\n\t\t}\n\n\t\tif (!Object.prototype.hasOwnProperty.call(index, b)) {\n\t\t\tconst reason = `not in alphabet ${b}`;\n\t\t\tconst position = {start: start + 1, end: start + 2};\n\t\t\tthrow new Base64EncodeError(reason, string, position);\n\t\t}\n\n\t\tif (stop > 2) {\n\t\t\tif (!Object.prototype.hasOwnProperty.call(index, c)) {\n\t\t\t\tconst reason = `not in alphabet ${c}`;\n\t\t\t\tconst position = {start: start + 2, end: start + 3};\n\t\t\t\tthrow new Base64EncodeError(reason, string, position);\n\t\t\t}\n\n\t\t\tif (stop > 3) {\n\t\t\t\tif (!Object.prototype.hasOwnProperty.call(index, d)) {\n\t\t\t\t\tconst reason = `not in alphabet ${d}`;\n\t\t\t\t\tconst position = {start: start + 3, end: start + 4};\n\t\t\t\t\tthrow new Base64EncodeError(reason, string, position);\n\t\t\t\t}\n\t\t\t} else if (index[c] & 3) {\n\t\t\t\tconst reason = `trailing bits in ${a}${b}${c}, last digit should be ${\n\t\t\t\t\toptions.alphabet[index[c] & (63 << 2)]\n\t\t\t\t}`;\n\t\t\t\tconst position = {start: start + 2, end: start + 3};\n\t\t\t\tthrow new Base64EncodeError(reason, string, position);\n\t\t\t}\n\t\t} else if (index[b] & 15) {\n\t\t\tconst reason = `trailing bits in ${a}${b}, last digit should be ${\n\t\t\t\toptions.alphabet[index[b] & (3 << 4)]\n\t\t\t}`;\n\t\t\tconst position = {start: start + 1, end: start + 2};\n\t\t\tthrow new Base64EncodeError(reason, string, position);\n\t\t}\n\n\t\tswitch (stop) {\n\t\t\tcase 4:\n\t\t\t\tyield* char4tobyte3(index, a, b, c, d);\n\t\t\t\tbreak;\n\t\t\tcase 3:\n\t\t\t\tyield* char3tobyte2(index, a, b, c);\n\t\t\t\tbreak;\n\t\t\tcase 2:\n\t\t\t\tyield* char2tobyte1(index, a, b);\n\t\t\t\tbreak;\n\t\t\tdefault:\n\t\t\t\tassert(false, `Unexpected stop value: ${stop}.`);\n\t\t}\n\n\t\tstart += 4;\n\t}\n}\n",
     "static": true,
-    "longname": "/home/runner/work/js-codec-base64/js-codec-base64/src/_encode.js",
+    "longname": "/home/runner/work/base64/base64/src/_encode.js",
     "access": "public",
     "description": null,
     "lineNumber": 1
@@ -730,10 +730,10 @@
     "longname": "src/_encode.js~_encode",
     "access": "private",
     "export": true,
-    "importPath": "@aureooms/js-codec-base64/src/_encode.js",
+    "importPath": "@codec-bytes/base64/src/_encode.js",
     "importStyle": "_encode",
     "description": null,
-    "lineNumber": 15,
+    "lineNumber": 17,
     "undocument": true,
     "params": [
       {
@@ -760,7 +760,7 @@
     "name": "src/byte1tochar2.js",
     "content": "export default function* byte1tochar2(alphabet, a) {\n\tyield alphabet[a >> 2];\n\tyield alphabet[63 & (a << 4)];\n}\n",
     "static": true,
-    "longname": "/home/runner/work/js-codec-base64/js-codec-base64/src/byte1tochar2.js",
+    "longname": "/home/runner/work/base64/base64/src/byte1tochar2.js",
     "access": "public",
     "description": null,
     "lineNumber": 1
@@ -776,7 +776,7 @@
     "longname": "src/byte1tochar2.js~byte1tochar2",
     "access": "public",
     "export": true,
-    "importPath": "@aureooms/js-codec-base64/src/byte1tochar2.js",
+    "importPath": "@codec-bytes/base64/src/byte1tochar2.js",
     "importStyle": "byte1tochar2",
     "description": null,
     "lineNumber": 1,
@@ -803,7 +803,7 @@
     "name": "src/byte2tochar3.js",
     "content": "export default function* byte2tochar3(alphabet, a, b) {\n\tyield alphabet[a >> 2];\n\tyield alphabet[(63 & (a << 4)) | (b >> 4)];\n\tyield alphabet[63 & (b << 2)];\n}\n",
     "static": true,
-    "longname": "/home/runner/work/js-codec-base64/js-codec-base64/src/byte2tochar3.js",
+    "longname": "/home/runner/work/base64/base64/src/byte2tochar3.js",
     "access": "public",
     "description": null,
     "lineNumber": 1
@@ -819,7 +819,7 @@
     "longname": "src/byte2tochar3.js~byte2tochar3",
     "access": "public",
     "export": true,
-    "importPath": "@aureooms/js-codec-base64/src/byte2tochar3.js",
+    "importPath": "@codec-bytes/base64/src/byte2tochar3.js",
     "importStyle": "byte2tochar3",
     "description": null,
     "lineNumber": 1,
@@ -852,7 +852,7 @@
     "name": "src/byte3tochar4.js",
     "content": "export default function* byte3tochar4(alphabet, a, b, c) {\n\tyield alphabet[a >> 2];\n\tyield alphabet[(63 & (a << 4)) | (b >> 4)];\n\tyield alphabet[(63 & (b << 2)) | (c >> 6)];\n\tyield alphabet[63 & c];\n}\n",
     "static": true,
-    "longname": "/home/runner/work/js-codec-base64/js-codec-base64/src/byte3tochar4.js",
+    "longname": "/home/runner/work/base64/base64/src/byte3tochar4.js",
     "access": "public",
     "description": null,
     "lineNumber": 1
@@ -868,7 +868,7 @@
     "longname": "src/byte3tochar4.js~byte3tochar4",
     "access": "public",
     "export": true,
-    "importPath": "@aureooms/js-codec-base64/src/byte3tochar4.js",
+    "importPath": "@codec-bytes/base64/src/byte3tochar4.js",
     "importStyle": "byte3tochar4",
     "description": null,
     "lineNumber": 1,
@@ -907,7 +907,7 @@
     "name": "src/char2tobyte1.js",
     "content": "export default function* char2tobyte1(index, a, b) {\n\tyield (index[a] << 2) | (index[b] >> 4);\n}\n",
     "static": true,
-    "longname": "/home/runner/work/js-codec-base64/js-codec-base64/src/char2tobyte1.js",
+    "longname": "/home/runner/work/base64/base64/src/char2tobyte1.js",
     "access": "public",
     "description": null,
     "lineNumber": 1
@@ -923,7 +923,7 @@
     "longname": "src/char2tobyte1.js~char2tobyte1",
     "access": "public",
     "export": true,
-    "importPath": "@aureooms/js-codec-base64/src/char2tobyte1.js",
+    "importPath": "@codec-bytes/base64/src/char2tobyte1.js",
     "importStyle": "char2tobyte1",
     "description": null,
     "lineNumber": 1,
@@ -956,7 +956,7 @@
     "name": "src/char3tobyte2.js",
     "content": "export default function* char3tobyte2(index, a, b, c) {\n\tyield (index[a] << 2) | (index[b] >> 4);\n\tyield (0xff & (index[b] << 4)) | (index[c] >> 2);\n}\n",
     "static": true,
-    "longname": "/home/runner/work/js-codec-base64/js-codec-base64/src/char3tobyte2.js",
+    "longname": "/home/runner/work/base64/base64/src/char3tobyte2.js",
     "access": "public",
     "description": null,
     "lineNumber": 1
@@ -972,7 +972,7 @@
     "longname": "src/char3tobyte2.js~char3tobyte2",
     "access": "public",
     "export": true,
-    "importPath": "@aureooms/js-codec-base64/src/char3tobyte2.js",
+    "importPath": "@codec-bytes/base64/src/char3tobyte2.js",
     "importStyle": "char3tobyte2",
     "description": null,
     "lineNumber": 1,
@@ -1011,7 +1011,7 @@
     "name": "src/char4tobyte3.js",
     "content": "export default function* char4tobyte3(index, a, b, c, d) {\n\tyield (index[a] << 2) | (index[b] >> 4);\n\tyield (0xff & (index[b] << 4)) | (index[c] >> 2);\n\tyield (0xff & (index[c] << 6)) | index[d];\n}\n",
     "static": true,
-    "longname": "/home/runner/work/js-codec-base64/js-codec-base64/src/char4tobyte3.js",
+    "longname": "/home/runner/work/base64/base64/src/char4tobyte3.js",
     "access": "public",
     "description": null,
     "lineNumber": 1
@@ -1027,7 +1027,7 @@
     "longname": "src/char4tobyte3.js~char4tobyte3",
     "access": "public",
     "export": true,
-    "importPath": "@aureooms/js-codec-base64/src/char4tobyte3.js",
+    "importPath": "@codec-bytes/base64/src/char4tobyte3.js",
     "importStyle": "char4tobyte3",
     "description": null,
     "lineNumber": 1,
@@ -1072,7 +1072,7 @@
     "name": "src/decode.js",
     "content": "import _decode from './_decode.js';\nimport DEFAULT_OPTIONS from './DEFAULT_OPTIONS.js';\n\nexport default function decode(bytes, options = DEFAULT_OPTIONS) {\n\treturn [..._decode(bytes, options)].join('');\n}\n",
     "static": true,
-    "longname": "/home/runner/work/js-codec-base64/js-codec-base64/src/decode.js",
+    "longname": "/home/runner/work/base64/base64/src/decode.js",
     "access": "public",
     "description": null,
     "lineNumber": 1
@@ -1088,7 +1088,7 @@
     "longname": "src/decode.js~decode",
     "access": "public",
     "export": true,
-    "importPath": "@aureooms/js-codec-base64/src/decode.js",
+    "importPath": "@codec-bytes/base64/src/decode.js",
     "importStyle": "decode",
     "description": null,
     "lineNumber": 4,
@@ -1122,7 +1122,7 @@
     "name": "src/encode.js",
     "content": "import _encode from './_encode.js';\nimport DEFAULT_OPTIONS from './DEFAULT_OPTIONS.js';\n\nexport default function encode(bytes, options = DEFAULT_OPTIONS) {\n\treturn [..._encode(bytes, options)];\n}\n",
     "static": true,
-    "longname": "/home/runner/work/js-codec-base64/js-codec-base64/src/encode.js",
+    "longname": "/home/runner/work/base64/base64/src/encode.js",
     "access": "public",
     "description": null,
     "lineNumber": 1
@@ -1138,7 +1138,7 @@
     "longname": "src/encode.js~encode",
     "access": "public",
     "export": true,
-    "importPath": "@aureooms/js-codec-base64/src/encode.js",
+    "importPath": "@codec-bytes/base64/src/encode.js",
     "importStyle": "encode",
     "description": null,
     "lineNumber": 4,
@@ -1170,9 +1170,9 @@
     "__docId__": 75,
     "kind": "file",
     "name": "src/index.js",
-    "content": "import Base64DecodeError from './Base64DecodeError.js';\nimport Base64EncodeError from './Base64EncodeError.js';\nimport DEFAULT_OPTIONS from './DEFAULT_OPTIONS.js';\nimport _decode from './_decode.js';\nimport _encode from './_encode.js';\nimport byte1tochar2 from './byte1tochar2.js';\nimport byte2tochar3 from './byte2tochar3.js';\nimport byte3tochar4 from './byte3tochar4.js';\nimport char2tobyte1 from './char2tobyte1.js';\nimport char3tobyte2 from './char3tobyte2.js';\nimport char4tobyte3 from './char4tobyte3.js';\nimport decode from './decode.js';\nimport encode from './encode.js';\nimport variants from './variants.js';\n\n/* eslint import/no-anonymous-default-export: [2, {\"allowObject\": true}] */\nexport default {\n\tdecode,\n\tencode,\n};\n\nexport {\n\tBase64DecodeError,\n\tBase64EncodeError,\n\tDEFAULT_OPTIONS,\n\t_decode,\n\t_encode,\n\tbyte1tochar2,\n\tbyte2tochar3,\n\tbyte3tochar4,\n\tchar2tobyte1,\n\tchar3tobyte2,\n\tchar4tobyte3,\n\tdecode,\n\tencode,\n\tvariants,\n};\n",
+    "content": "export {default as Base64DecodeError} from './Base64DecodeError.js';\nexport {default as Base64EncodeError} from './Base64EncodeError.js';\nexport {default as DEFAULT_OPTIONS} from './DEFAULT_OPTIONS.js';\nexport {default as _decode} from './_decode.js';\nexport {default as _encode} from './_encode.js';\nexport {default as byte1tochar2} from './byte1tochar2.js';\nexport {default as byte2tochar3} from './byte2tochar3.js';\nexport {default as byte3tochar4} from './byte3tochar4.js';\nexport {default as char2tobyte1} from './char2tobyte1.js';\nexport {default as char3tobyte2} from './char3tobyte2.js';\nexport {default as char4tobyte3} from './char4tobyte3.js';\nexport {default as decode} from './decode.js';\nexport {default as encode} from './encode.js';\nexport {default as variants} from './variants.js';\n\nexport {ValueError} from '@failure-abstraction/error';\nexport {CodecError} from '@codec-bytes/error';\n",
     "static": true,
-    "longname": "/home/runner/work/js-codec-base64/js-codec-base64/src/index.js",
+    "longname": "/home/runner/work/base64/base64/src/index.js",
     "access": "public",
     "description": null,
     "lineNumber": 1
@@ -1181,9 +1181,9 @@
     "__docId__": 76,
     "kind": "file",
     "name": "src/variants.js",
-    "content": "import {enumerate} from '@aureooms/js-itertools';\n\nimport {object, reflect} from '@aureooms/js-mapping';\n\nconst variants = {\n\t// Standard\n\tRFC4648: {\n\t\talphabet:\n\t\t\t'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/',\n\t\tpadding: '=',\n\t},\n\n\t// Unpadded base64url\n\tRFC7515: {\n\t\talphabet:\n\t\t\t'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_',\n\t\tpadding: false,\n\t},\n\n\t// YUI library\n\tY64: {\n\t\talphabet:\n\t\t\t'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._',\n\t\tpadding: '-',\n\t},\n\n\t// IMAP mailbox names\n\tRFC3501: {\n\t\talphabet:\n\t\t\t'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+,',\n\t\tpadding: false,\n\t},\n};\n\nfor (const variant in variants) {\n\tif (Object.prototype.hasOwnProperty.call(variants, variant)) {\n\t\tvariants[variant].index = object(\n\t\t\treflect(enumerate(variants[variant].alphabet)),\n\t\t);\n\t}\n}\n\nexport default variants;\n",
+    "content": "import {enumerate} from '@iterable-iterator/zip';\nimport {toObject, inverse} from '@iterable-iterator/mapping';\n\nconst variants = {\n\t// Standard\n\tRFC4648: {\n\t\talphabet:\n\t\t\t'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/',\n\t\tpadding: '=',\n\t},\n\n\t// Unpadded base64url\n\tRFC7515: {\n\t\talphabet:\n\t\t\t'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_',\n\t\tpadding: false,\n\t},\n\n\t// YUI library\n\tY64: {\n\t\talphabet:\n\t\t\t'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._',\n\t\tpadding: '-',\n\t},\n\n\t// IMAP mailbox names\n\tRFC3501: {\n\t\talphabet:\n\t\t\t'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+,',\n\t\tpadding: false,\n\t},\n};\n\nfor (const variant in variants) {\n\tif (Object.prototype.hasOwnProperty.call(variants, variant)) {\n\t\tvariants[variant].index = toObject(\n\t\t\tinverse(enumerate(variants[variant].alphabet)),\n\t\t);\n\t}\n}\n\nexport default variants;\n",
     "static": true,
-    "longname": "/home/runner/work/js-codec-base64/js-codec-base64/src/variants.js",
+    "longname": "/home/runner/work/base64/base64/src/variants.js",
     "access": "public",
     "description": null,
     "lineNumber": 1
@@ -1197,10 +1197,10 @@
     "longname": "src/variants.js~variants",
     "access": "public",
     "export": true,
-    "importPath": "@aureooms/js-codec-base64/src/variants.js",
+    "importPath": "@codec-bytes/base64/src/variants.js",
     "importStyle": "variants",
     "description": null,
-    "lineNumber": 5,
+    "lineNumber": 4,
     "undocument": true,
     "type": {
       "types": [
@@ -1210,16 +1210,16 @@
   },
   {
     "kind": "index",
-    "content": "[@aureooms/js-codec-base64](https://aureooms.github.io/js-codec-base64)\n==\n\nBase64 encoder/decoder for JavaScript.\nSee [docs](https://aureooms.github.io/js-codec-base64/index.html).\nParent is [@aureooms/js-codec](https://github.com/aureooms/js-codec).\n\n```js\n> import ascii from '@aureooms/js-codec-ascii' ;\n> import base64 from '@aureooms/js-codec-base64' ;\n> let bytes = ascii.encode('any carnal pleasure') ;\n> base64.decode( bytes ) ;\n'YW55IGNhcm5hbCBwbGVhc3VyZQ=='\n> base64.decode( bytes , { variant : 'RFC7515' } ) ;\n'YW55IGNhcm5hbCBwbGVhc3VyZQ'\n> base64.decode( bytes , { variant : 'Y64' } ) ;\n'YW55IGNhcm5hbCBwbGVhc3VyZQ--'\n> base64.decode( bytes , { alphabet : 'BCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/A' , padding : '.' } ) ;\n'ZX66JHOidn6icDCxcHWid4WzaR..'\n```\n\n[![License](https://img.shields.io/github/license/aureooms/js-codec-base64.svg)](https://raw.githubusercontent.com/aureooms/js-codec-base64/main/LICENSE)\n[![Version](https://img.shields.io/npm/v/@aureooms/js-codec-base64.svg)](https://www.npmjs.org/package/@aureooms/js-codec-base64)\n[![Build](https://img.shields.io/travis/aureooms/js-codec-base64/main.svg)](https://travis-ci.com/aureooms/js-codec-base64/branches)\n[![Dependencies](https://img.shields.io/david/aureooms/js-codec-base64.svg)](https://david-dm.org/aureooms/js-codec-base64)\n[![Dev dependencies](https://img.shields.io/david/dev/aureooms/js-codec-base64.svg)](https://david-dm.org/aureooms/js-codec-base64?type=dev)\n[![GitHub issues](https://img.shields.io/github/issues/aureooms/js-codec-base64.svg)](https://github.com/aureooms/js-codec-base64/issues)\n[![Downloads](https://img.shields.io/npm/dm/@aureooms/js-codec-base64.svg)](https://www.npmjs.org/package/@aureooms/js-codec-base64)\n\n[![Code issues](https://img.shields.io/codeclimate/issues/aureooms/js-codec-base64.svg)](https://codeclimate.com/github/aureooms/js-codec-base64/issues)\n[![Code maintainability](https://img.shields.io/codeclimate/maintainability/aureooms/js-codec-base64.svg)](https://codeclimate.com/github/aureooms/js-codec-base64/trends/churn)\n[![Code coverage (cov)](https://img.shields.io/codecov/c/gh/aureooms/js-codec-base64/main.svg)](https://codecov.io/gh/aureooms/js-codec-base64)\n[![Code technical debt](https://img.shields.io/codeclimate/tech-debt/aureooms/js-codec-base64.svg)](https://codeclimate.com/github/aureooms/js-codec-base64/trends/technical_debt)\n[![Documentation](https://aureooms.github.io/js-codec-base64/badge.svg)](https://aureooms.github.io/js-codec-base64/source.html)\n[![Package size](https://img.shields.io/bundlephobia/minzip/@aureooms/js-codec-base64)](https://bundlephobia.com/result?p=@aureooms/js-codec-base64)\n",
-    "longname": "/home/runner/work/js-codec-base64/js-codec-base64/README.md",
+    "content": ":fax:\n[@codec-bytes/base64](https://codec-bytes.github.io/base64)\n==\n\nBase64 encoder/decoder for JavaScript.\nSee [docs](https://codec-bytes.github.io/base64/index.html).\nParent is [@codec-bytes/about](https://github.com/codec-bytes/about).\n\n```js\nimport * as ascii from '@codec-bytes/ascii';\nimport * as base64 from '@codec-bytes/base64';\nlet bytes = ascii.encode('any carnal pleasure');\nbase64.decode(bytes); // 'YW55IGNhcm5hbCBwbGVhc3VyZQ=='\nbase64.decode(bytes, {variant: 'RFC7515'}); // 'YW55IGNhcm5hbCBwbGVhc3VyZQ'\nbase64.decode(bytes, {variant: 'Y64'}); // 'YW55IGNhcm5hbCBwbGVhc3VyZQ--'\nbase64.decode(bytes, {alphabet: 'BCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/A', padding: '.'}); // 'ZX66JHOidn6icDCxcHWid4WzaR..'\n```\n\n[![License](https://img.shields.io/github/license/codec-bytes/base64.svg)](https://raw.githubusercontent.com/codec-bytes/base64/main/LICENSE)\n[![Version](https://img.shields.io/npm/v/@codec-bytes/base64.svg)](https://www.npmjs.org/package/@codec-bytes/base64)\n[![Tests](https://img.shields.io/github/workflow/status/codec-bytes/base64/ci?event=push&label=tests)](https://github.com/codec-bytes/base64/actions/workflows/ci.yml?query=branch:main)\n[![Dependencies](https://img.shields.io/librariesio/github/codec-bytes/base64.svg)](https://github.com/codec-bytes/base64/network/dependencies)\n[![GitHub issues](https://img.shields.io/github/issues/codec-bytes/base64.svg)](https://github.com/codec-bytes/base64/issues)\n[![Downloads](https://img.shields.io/npm/dm/@codec-bytes/base64.svg)](https://www.npmjs.org/package/@codec-bytes/base64)\n\n[![Code issues](https://img.shields.io/codeclimate/issues/codec-bytes/base64.svg)](https://codeclimate.com/github/codec-bytes/base64/issues)\n[![Code maintainability](https://img.shields.io/codeclimate/maintainability/codec-bytes/base64.svg)](https://codeclimate.com/github/codec-bytes/base64/trends/churn)\n[![Code coverage (cov)](https://img.shields.io/codecov/c/gh/codec-bytes/base64/main.svg)](https://codecov.io/gh/codec-bytes/base64)\n[![Code technical debt](https://img.shields.io/codeclimate/tech-debt/codec-bytes/base64.svg)](https://codeclimate.com/github/codec-bytes/base64/trends/technical_debt)\n[![Documentation](https://codec-bytes.github.io/base64/badge.svg)](https://codec-bytes.github.io/base64/source.html)\n[![Package size](https://img.shields.io/bundlephobia/minzip/@codec-bytes/base64)](https://bundlephobia.com/result?p=@codec-bytes/base64)\n",
+    "longname": "/home/runner/work/base64/base64/README.md",
     "name": "./README.md",
     "static": true,
     "access": "public"
   },
   {
     "kind": "packageJSON",
-    "content": "{\n  \"name\": \"@aureooms/js-codec-base64\",\n  \"description\": \"Base64 encoder/decoder for JavaScript\",\n  \"version\": \"3.0.0\",\n  \"license\": \"AGPL-3.0\",\n  \"author\": \"aureooms\",\n  \"homepage\": \"https://aureooms.github.io/js-codec-base64\",\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"https://github.com/aureooms/js-codec-base64\"\n  },\n  \"bugs\": {\n    \"url\": \"https://github.com/aureooms/js-codec-base64/issues\"\n  },\n  \"keywords\": [\n    \"base64\",\n    \"codec\",\n    \"decode\",\n    \"encode\",\n    \"strings\"\n  ],\n  \"sideEffects\": false,\n  \"source\": \"src/index.js\",\n  \"main\": \"dist/index.js\",\n  \"module\": \"dist/index.module.js\",\n  \"umd:main\": \"dist/index.umd.js\",\n  \"unpkg\": \"dist/index.umd.js\",\n  \"exports\": {\n    \".\": {\n      \"browser\": \"./dist/index.module.js\",\n      \"umd\": \"./dist/index.umd.js\",\n      \"require\": \"./dist/index.js\",\n      \"default\": \"./dist/index.modern.js\"\n    }\n  },\n  \"files\": [\n    \"dist\"\n  ],\n  \"scripts\": {\n    \"build\": \"NODE_ENV=production microbundle\",\n    \"build-docs\": \"esdoc\",\n    \"build-gh-pages\": \"npm run build-docs\",\n    \"commit-msg\": \"commitlint --edit\",\n    \"cover\": \"c8 --all --src src --reporter=lcov npm test\",\n    \"debug\": \"NODE_ENV=debug npm run test -- -st --fail-fast\",\n    \"dev\": \"npm run lint-config-and-fix && npm run lint-and-fix && npm run cover -- -- -st --fail-fast\",\n    \"install-hooks\": \"husky install\",\n    \"lint\": \"xo\",\n    \"lint-and-fix\": \"npm run lint -- --fix\",\n    \"lint-config\": \"fixpack --dryRun\",\n    \"lint-config-and-fix\": \"fixpack || fixpack\",\n    \"postinstall\": \"npm run install-hooks\",\n    \"postpublish\": \"pinst --enable\",\n    \"precommit\": \"lint-staged\",\n    \"prepare\": \"npm run build\",\n    \"prepublishOnly\": \"pinst --disable\",\n    \"release\": \"np --message ':hatching_chick: release: Bumping to v%s.'\",\n    \"test\": \"ava\",\n    \"travis\": \"npm run lint-config && npm run lint && npm run cover\"\n  },\n  \"dependencies\": {\n    \"@aureooms/js-codec\": \"^4.0.0\",\n    \"@aureooms/js-error\": \"^5.0.0\",\n    \"@aureooms/js-itertools\": \"^5.0.0\",\n    \"@aureooms/js-mapping\": \"^5.0.0\"\n  },\n  \"devDependencies\": {\n    \"@aureooms/js-codec-ascii\": \"2.0.1\",\n    \"@babel/core\": \"7.13.10\",\n    \"@babel/preset-env\": \"7.13.10\",\n    \"@babel/register\": \"7.13.8\",\n    \"@commitlint/cli\": \"12.0.1\",\n    \"@js-library/commitlint-config\": \"0.0.4\",\n    \"ava\": \"3.15.0\",\n    \"babel-plugin-transform-remove-console\": \"6.9.4\",\n    \"babel-plugin-unassert\": \"3.0.1\",\n    \"babel-preset-power-assert\": \"3.0.0\",\n    \"c8\": \"7.6.0\",\n    \"coveralls\": \"3.1.0\",\n    \"esdoc\": \"1.1.0\",\n    \"esdoc-inject-script-plugin\": \"1.0.0\",\n    \"esdoc-inject-style-plugin\": \"1.0.0\",\n    \"esdoc-standard-plugin\": \"1.0.0\",\n    \"fixpack\": \"4.0.0\",\n    \"husky\": \"5.1.3\",\n    \"lint-staged\": \"10.5.4\",\n    \"microbundle\": \"0.13.0\",\n    \"np\": \"7.4.0\",\n    \"pinst\": \"2.1.6\",\n    \"power-assert\": \"1.6.1\",\n    \"regenerator-runtime\": \"0.13.7\",\n    \"xo\": \"0.38.2\"\n  },\n  \"ava\": {\n    \"files\": [\n      \"test/src/**/*\"\n    ],\n    \"require\": [\n      \"regenerator-runtime/runtime\",\n      \"@babel/register\"\n    ],\n    \"timeout\": \"1m\"\n  },\n  \"babel\": {\n    \"sourceMaps\": true,\n    \"presets\": [\n      [\n        \"@babel/preset-env\",\n        {\n          \"targets\": [\n            \"defaults\",\n            \"maintained node versions\"\n          ]\n        }\n      ]\n    ],\n    \"env\": {\n      \"debug\": {\n        \"presets\": [\n          [\n            \"@babel/preset-env\",\n            {\n              \"targets\": \"current node\"\n            }\n          ],\n          \"babel-preset-power-assert\"\n        ]\n      },\n      \"test\": {\n        \"presets\": [\n          [\n            \"@babel/preset-env\",\n            {\n              \"targets\": \"current node\"\n            }\n          ],\n          \"babel-preset-power-assert\"\n        ],\n        \"plugins\": [\n          [\n            \"transform-remove-console\",\n            {\n              \"exclude\": [\n                \"log\",\n                \"error\",\n                \"warn\"\n              ]\n            }\n          ]\n        ]\n      },\n      \"development\": {\n        \"presets\": [\n          \"babel-preset-power-assert\"\n        ],\n        \"plugins\": [\n          [\n            \"transform-remove-console\",\n            {\n              \"exclude\": [\n                \"log\",\n                \"error\",\n                \"warn\"\n              ]\n            }\n          ]\n        ]\n      },\n      \"production\": {\n        \"plugins\": [\n          \"babel-plugin-unassert\",\n          [\n            \"transform-remove-console\",\n            {\n              \"exclude\": [\n                \"log\",\n                \"error\",\n                \"warn\"\n              ]\n            }\n          ]\n        ]\n      }\n    }\n  },\n  \"lint-staged\": {\n    \"*.js\": [\n      \"npm run lint-and-fix\"\n    ],\n    \"package.json\": [\n      \"npm run lint-config-and-fix\"\n    ]\n  },\n  \"prettier\": {\n    \"trailingComma\": \"all\"\n  },\n  \"xo\": {\n    \"prettier\": true,\n    \"plugins\": [\n      \"unicorn\"\n    ],\n    \"rules\": {\n      \"unicorn/filename-case\": \"off\"\n    },\n    \"overrides\": [\n      {\n        \"files\": [\n          \"doc/**\"\n        ],\n        \"env\": \"browser\"\n      }\n    ]\n  }\n}\n",
-    "longname": "/home/runner/work/js-codec-base64/js-codec-base64/package.json",
+    "content": "{\n  \"name\": \"@codec-bytes/base64\",\n  \"description\": \"Base64 encoder/decoder for JavaScript\",\n  \"version\": \"4.0.0\",\n  \"license\": \"AGPL-3.0\",\n  \"author\": \"make-github-pseudonymous-again\",\n  \"homepage\": \"https://codec-bytes.github.io/base64\",\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"https://github.com/codec-bytes/base64\"\n  },\n  \"bugs\": {\n    \"url\": \"https://github.com/codec-bytes/base64/issues\"\n  },\n  \"keywords\": [\n    \"base64\",\n    \"codec\",\n    \"decode\",\n    \"encode\",\n    \"strings\"\n  ],\n  \"sideEffects\": false,\n  \"type\": \"module\",\n  \"source\": \"src/index.js\",\n  \"main\": \"dist/index.cjs\",\n  \"module\": \"dist/index.module.js\",\n  \"esmodule\": \"dist/index.modern.js\",\n  \"umd:main\": \"dist/index.umd.js\",\n  \"unpkg\": \"dist/index.umd.js\",\n  \"exports\": {\n    \".\": {\n      \"browser\": \"./dist/index.module.js\",\n      \"umd\": \"./dist/index.umd.js\",\n      \"require\": \"./dist/index.cjs\",\n      \"default\": \"./dist/index.modern.js\"\n    }\n  },\n  \"files\": [\n    \"dist\"\n  ],\n  \"publishConfig\": {\n    \"access\": \"public\"\n  },\n  \"scripts\": {\n    \"build\": \"NODE_ENV=production microbundle\",\n    \"build-docs\": \"esdoc\",\n    \"build-gh-pages\": \"npm run build-docs\",\n    \"commit-msg\": \"commitlint --edit\",\n    \"cover\": \"NODE_ENV=cover c8 --all --src src --reporter lcov --reporter text-summary --reporter text npm test\",\n    \"debug\": \"NODE_ENV=debug npm run test -- -st --fail-fast\",\n    \"dev\": \"npm run lint-config-and-fix && npm run lint-and-fix && npm run cover -- -- -st --fail-fast\",\n    \"install-hooks\": \"husky install\",\n    \"lint\": \"xo\",\n    \"lint-and-fix\": \"npm run lint -- --fix\",\n    \"lint-config\": \"fixpack --dryRun\",\n    \"lint-config-and-fix\": \"fixpack || fixpack\",\n    \"postinstall\": \"npm run install-hooks\",\n    \"postpublish\": \"pinst --enable\",\n    \"precommit\": \"lint-staged\",\n    \"prepare\": \"npm run build\",\n    \"prepublishOnly\": \"pinst --disable\",\n    \"release\": \"np --message ':hatching_chick: release: Bumping to v%s.'\",\n    \"test\": \"npm run test:src\",\n    \"test-cmd\": \"NODE_LOADER_CONFIG=test/loader/config.js ava\",\n    \"test:cjs\": \"IMPORT_MAP_PATH=test/import-maps/dist/index.json npm run test-cmd\",\n    \"test:dist\": \"npm run test:modern && npm run test:module && npm run test:cjs\",\n    \"test:modern\": \"IMPORT_MAP_PATH=test/import-maps/dist/index.modern.json npm run test-cmd\",\n    \"test:module\": \"IMPORT_MAP_PATH=test/import-maps/dist/index.module.json npm run test-cmd\",\n    \"test:src\": \"IMPORT_MAP_PATH=test/import-maps/src/index.json npm run test-cmd\"\n  },\n  \"dependencies\": {\n    \"@codec-bytes/error\": \"^5.0.1\",\n    \"@failure-abstraction/error\": \"^6.0.1\",\n    \"@iterable-iterator/iter\": \"^1.0.1\",\n    \"@iterable-iterator/mapping\": \"^9.0.0\",\n    \"@iterable-iterator/next\": \"^2.0.1\",\n    \"@iterable-iterator/zip\": \"^1.0.1\"\n  },\n  \"devDependencies\": {\n    \"@babel/core\": \"7.19.3\",\n    \"@babel/plugin-transform-destructuring\": \"7.19.4\",\n    \"@babel/plugin-transform-for-of\": \"7.18.8\",\n    \"@babel/preset-env\": \"7.19.4\",\n    \"@codec-bytes/ascii\": \"3.0.0\",\n    \"@commitlint/cli\": \"17.1.2\",\n    \"@iterable-iterator/range\": \"2.1.0\",\n    \"@js-library/commitlint-config\": \"0.0.4\",\n    \"@node-loader/babel\": \"2.0.1\",\n    \"@node-loader/core\": \"2.0.0\",\n    \"@node-loader/import-maps\": \"1.1.0\",\n    \"ava\": \"4.3.3\",\n    \"babel-plugin-transform-remove-console\": \"6.9.4\",\n    \"babel-plugin-unassert\": \"3.2.0\",\n    \"babel-preset-power-assert\": \"3.0.0\",\n    \"c8\": \"7.12.0\",\n    \"esdoc\": \"1.1.0\",\n    \"esdoc-inject-script-plugin\": \"1.0.0\",\n    \"esdoc-inject-style-plugin\": \"1.0.0\",\n    \"esdoc-standard-plugin\": \"1.0.0\",\n    \"fixpack\": \"4.0.0\",\n    \"husky\": \"8.0.1\",\n    \"lint-staged\": \"13.0.3\",\n    \"microbundle\": \"0.15.1\",\n    \"np\": \"7.6.2\",\n    \"pinst\": \"3.0.0\",\n    \"power-assert\": \"1.6.1\",\n    \"regenerator-runtime\": \"0.13.10\",\n    \"xo\": \"0.52.4\"\n  },\n  \"ava\": {\n    \"files\": [\n      \"test/src/**/*\"\n    ],\n    \"require\": [\n      \"regenerator-runtime/runtime\"\n    ],\n    \"timeout\": \"1m\",\n    \"nodeArguments\": [\n      \"--experimental-loader=@node-loader/core\"\n    ]\n  },\n  \"babel\": {\n    \"sourceMaps\": true,\n    \"plugins\": [\n      [\n        \"transform-remove-console\",\n        {\n          \"exclude\": [\n            \"log\",\n            \"error\",\n            \"warn\"\n          ]\n        }\n      ]\n    ],\n    \"env\": {\n      \"debug\": {\n        \"sourceMaps\": \"both\",\n        \"presets\": [\n          \"babel-preset-power-assert\"\n        ],\n        \"plugins\": [\n          [\n            \"transform-remove-console\",\n            {\n              \"exclude\": [\n                \"debug\",\n                \"log\",\n                \"error\",\n                \"warn\"\n              ]\n            }\n          ]\n        ]\n      },\n      \"test\": {\n        \"sourceMaps\": \"both\",\n        \"presets\": [\n          \"babel-preset-power-assert\"\n        ]\n      },\n      \"cover\": {\n        \"sourceMaps\": \"both\",\n        \"presets\": [\n          \"babel-preset-power-assert\"\n        ]\n      },\n      \"development\": {\n        \"presets\": [\n          [\n            \"@babel/preset-env\",\n            {\n              \"targets\": [\n                \"defaults\",\n                \"maintained node versions\"\n              ]\n            }\n          ],\n          \"babel-preset-power-assert\"\n        ]\n      },\n      \"production\": {\n        \"presets\": [\n          [\n            \"@babel/preset-env\",\n            {\n              \"targets\": [\n                \"defaults\",\n                \"maintained node versions\"\n              ]\n            }\n          ]\n        ],\n        \"plugins\": [\n          \"@babel/plugin-transform-destructuring\",\n          \"@babel/plugin-transform-for-of\",\n          \"babel-plugin-unassert\"\n        ]\n      }\n    }\n  },\n  \"lint-staged\": {\n    \"*.js\": [\n      \"npm run lint-and-fix\"\n    ],\n    \"package.json\": [\n      \"npm run lint-config-and-fix\"\n    ]\n  },\n  \"prettier\": {\n    \"trailingComma\": \"all\"\n  },\n  \"xo\": {\n    \"prettier\": true,\n    \"plugins\": [\n      \"unicorn\"\n    ],\n    \"rules\": {\n      \"unicorn/filename-case\": \"off\",\n      \"unicorn/prefer-node-protocol\": \"off\"\n    },\n    \"overrides\": [\n      {\n        \"files\": [\n          \"doc/**\"\n        ],\n        \"env\": \"browser\"\n      },\n      {\n        \"files\": [\n          \"src/**\"\n        ],\n        \"rules\": {\n          \"no-bitwise\": \"off\"\n        }\n      }\n    ]\n  }\n}\n",
+    "longname": "/home/runner/work/base64/base64/package.json",
     "name": "package.json",
     "static": true,
     "access": "public"
@@ -1234,7 +1234,7 @@
   },
   {
     "kind": "manual",
-    "longname": "/home/runner/work/js-codec-base64/js-codec-base64/doc/manual/overview.md",
+    "longname": "/home/runner/work/base64/base64/doc/manual/overview.md",
     "name": "./doc/manual/overview.md",
     "content": "# Overview\n",
     "static": true,
@@ -1242,25 +1242,25 @@
   },
   {
     "kind": "manual",
-    "longname": "/home/runner/work/js-codec-base64/js-codec-base64/doc/manual/installation.md",
+    "longname": "/home/runner/work/base64/base64/doc/manual/installation.md",
     "name": "./doc/manual/installation.md",
-    "content": "# Installation\n\nCan be managed using\n[jspm](http://jspm.io)\nor [npm](https://github.com/npm/npm).\n\n### jspm\n```terminal\njspm install npm:@aureooms/js-codec-base64\n```\n\n### npm\n```terminal\nnpm install @aureooms/js-codec-base64 --save\n```\n",
+    "content": "# Installation\n\nCan be managed using\n[yarn](https://yarnpkg.com/en/docs),\n[npm](https://docs.npmjs.com),\nor [jspm](https://jspm.org/docs).\n\n\n### yarn\n```terminal\nyarn add @codec-bytes/base64\n```\n\n### npm\n```terminal\nnpm install @codec-bytes/base64 --save\n```\n\n### jspm\n```terminal\njspm install npm:@codec-bytes/base64\n```\n",
     "static": true,
     "access": "public"
   },
   {
     "kind": "manual",
-    "longname": "/home/runner/work/js-codec-base64/js-codec-base64/doc/manual/usage.md",
+    "longname": "/home/runner/work/base64/base64/doc/manual/usage.md",
     "name": "./doc/manual/usage.md",
-    "content": "# Usage\n\nThe code needs a ES2015+ polyfill to work, for example\n[regenerator-runtime/runtime](https://babeljs.io/docs/usage/polyfill).\n```js\nrequire( 'regenerator-runtime/runtime' ) ;\n// or\nimport 'regenerator-runtime/runtime.js' ;\n```\n\nThen\n```js\nconst codecbase64 = require( '@aureooms/js-codec-base64' ) ;\n// or\nimport * as codecbase64 from '@aureooms/js-codec-base64' ;\n```\n",
+    "content": "# Usage\n\n> :warning: Depending on your environment, the code may require\n> `regeneratorRuntime` to be defined, for instance by importing\n> [regenerator-runtime/runtime](https://www.npmjs.com/package/regenerator-runtime).\n\nFirst, require the polyfill at the entry point of your application\n```js\nawait import('regenerator-runtime/runtime.js');\n// or\nimport 'regenerator-runtime/runtime.js';\n```\n\nThen, import the library where needed\n```js\nconst {encode, decode} = await import('@codec-bytes/base64');\n// or\nimport {encode, decode} from '@codec-bytes/base64';\n```\n",
     "static": true,
     "access": "public"
   },
   {
     "kind": "manual",
-    "longname": "/home/runner/work/js-codec-base64/js-codec-base64/doc/manual/example.md",
+    "longname": "/home/runner/work/base64/base64/doc/manual/example.md",
     "name": "./doc/manual/example.md",
-    "content": "# Example\n",
+    "content": "# Examples\n\n> More examples in [the test files](https://github.com/codec-bytes/base64/tree/main/test/src).\n",
     "static": true,
     "access": "public"
   }

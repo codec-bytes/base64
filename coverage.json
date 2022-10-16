@@ -23,14 +23,14 @@
       "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
-        13
+        14
       ]
     },
     "src/_encode.js": {
       "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
-        15
+        17
       ]
     },
     "src/byte1tochar2.js": {
@@ -93,7 +93,7 @@
       "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
-        5
+        4
       ]
     }
   }
