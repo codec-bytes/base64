@@ -10,7 +10,7 @@ const domReady = function (callback) {
 domReady(() => {
 	const projectname = document.createElement('a');
 	projectname.classList.add('project-name');
-	projectname.text = 'codec-bytes/base64';
+	projectname.text = '@codec-bytes/base64';
 	projectname.href = './index.html';
 
 	const header = document.querySelector('header');
