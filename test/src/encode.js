@@ -1,9 +1,8 @@
 import test from 'ava';
-import ascii from '@aureooms/js-codec-ascii';
-import {ValueError} from '@aureooms/js-error';
-import {CodecError} from '@aureooms/js-codec';
+import * as ascii from '@codec-bytes/ascii';
 
 import {encode, Base64EncodeError} from '../../src/index.js';
+import {ValueError, CodecError} from './_fixtures.js';
 
 function success(t, string, options, expected) {
 	const bytes = encode(string, options);

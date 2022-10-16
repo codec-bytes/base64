@@ -1,6 +1,5 @@
-import {enumerate} from '@aureooms/js-itertools';
-
-import {object, reflect} from '@aureooms/js-mapping';
+import {enumerate} from '@iterable-iterator/zip';
+import {toObject, inverse} from '@iterable-iterator/mapping';
 
 const variants = {
 	// Standard
@@ -34,8 +33,8 @@ const variants = {
 
 for (const variant in variants) {
 	if (Object.prototype.hasOwnProperty.call(variants, variant)) {
-		variants[variant].index = object(
-			reflect(enumerate(variants[variant].alphabet)),
+		variants[variant].index = toObject(
+			inverse(enumerate(variants[variant].alphabet)),
 		);
 	}
 }

@@ -1,5 +1,6 @@
-import {iter, next, StopIteration} from '@aureooms/js-itertools';
-import {ValueError} from '@aureooms/js-error';
+import {iter} from '@iterable-iterator/iter';
+import {next, StopIteration} from '@iterable-iterator/next';
+import {ValueError} from '@failure-abstraction/error';
 
 import byte3tochar4 from './byte3tochar4.js';
 import byte2tochar3 from './byte2tochar3.js';

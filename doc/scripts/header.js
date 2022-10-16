@@ -10,15 +10,14 @@ const domReady = function (callback) {
 domReady(() => {
 	const projectname = document.createElement('a');
 	projectname.classList.add('project-name');
-	projectname.text = 'aureooms/js-codec-base64';
+	projectname.text = 'codec-bytes/base64';
 	projectname.href = './index.html';
 
 	const header = document.querySelector('header');
 	header.insertBefore(projectname, header.firstChild);
 
 	const testlink = document.querySelector('header > a[data-ice="testLink"]');
-	testlink.href =
-		'https://coveralls.io/github/make-github-pseudonymous-again/js-codec-base64';
+	testlink.href = 'https://coveralls.io/github/codec-bytes/base64';
 	testlink.target = '_BLANK';
 
 	const searchBox = document.querySelector('.search-box');

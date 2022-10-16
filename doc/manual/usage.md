@@ -10,7 +10,7 @@ import 'regenerator-runtime/runtime.js' ;
 
 Then
 ```js
-const codecbase64 = require( '@aureooms/js-codec-base64' ) ;
+const codecbase64 = require( '@codec-bytes/base64' ) ;
 // or
-import * as codecbase64 from '@aureooms/js-codec-base64' ;
+import * as codecbase64 from '@codec-bytes/base64' ;
 ```

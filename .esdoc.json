@@ -17,7 +17,7 @@
           "autoPrivate": true
         },
         "brand": {
-          "title": "@aureooms/js-codec-base64"
+          "title": "@codec-bytes/base64"
         },
         "test": {
           "type": "ava",

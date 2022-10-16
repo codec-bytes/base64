@@ -1,10 +1,9 @@
 import test from 'ava';
-import ascii from '@aureooms/js-codec-ascii';
-import {ValueError} from '@aureooms/js-error';
-import {CodecError} from '@aureooms/js-codec';
-import {range} from '@aureooms/js-itertools';
+import * as ascii from '@codec-bytes/ascii';
+import {range} from '@iterable-iterator/range';
 
 import {decode, Base64DecodeError} from '../../src/index.js';
+import {ValueError, CodecError} from './_fixtures.js';
 
 function success(t, bytes, options, expected) {
 	const string = decode(bytes, options);

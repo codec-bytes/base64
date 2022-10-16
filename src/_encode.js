@@ -1,7 +1,9 @@
-import assert from 'assert';
-import {iter, next, StopIteration, enumerate} from '@aureooms/js-itertools';
-import {object, reflect} from '@aureooms/js-mapping';
-import {ValueError} from '@aureooms/js-error';
+import assert from 'node:assert';
+import {iter} from '@iterable-iterator/iter';
+import {next, StopIteration} from '@iterable-iterator/next';
+import {enumerate} from '@iterable-iterator/zip';
+import {toObject, inverse} from '@iterable-iterator/mapping';
+import {ValueError} from '@failure-abstraction/error';
 
 import char4tobyte3 from './char4tobyte3.js';
 import char3tobyte2 from './char3tobyte2.js';
@@ -23,7 +25,7 @@ export default function* _encode(string, options = DEFAULT_OPTIONS) {
 
 	let start = 0;
 
-	const index = options.index || object(reflect(enumerate(options.alphabet)));
+	const index = options.index || toObject(inverse(enumerate(options.alphabet)));
 	const padding = options.padding;
 
 	const it = iter(string);
