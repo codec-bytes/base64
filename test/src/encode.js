@@ -1,8 +1,8 @@
 import test from 'ava';
 import * as ascii from '@codec-bytes/ascii';
 
-import {encode, Base64EncodeError} from '#module';
 import {ValueError, CodecError} from './_fixtures.js';
+import {encode, Base64EncodeError} from '#module';
 
 function success(t, string, options, expected) {
 	const bytes = encode(string, options);

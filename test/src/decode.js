@@ -2,8 +2,8 @@ import test from 'ava';
 import * as ascii from '@codec-bytes/ascii';
 import {range} from '@iterable-iterator/range';
 
-import {decode, Base64DecodeError} from '#module';
 import {ValueError, CodecError} from './_fixtures.js';
+import {decode, Base64DecodeError} from '#module';
 
 function success(t, bytes, options, expected) {
 	const string = decode(bytes, options);
