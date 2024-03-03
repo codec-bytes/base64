@@ -1,19 +1,17 @@
+import {ValueError} from '@failure-abstraction/error';
 import {iter} from '@iterable-iterator/iter';
 import {next, StopIteration} from '@iterable-iterator/next';
-import {ValueError} from '@failure-abstraction/error';
-
-import byte3tochar4 from './byte3tochar4.js';
-import byte2tochar3 from './byte2tochar3.js';
-import byte1tochar2 from './byte1tochar2.js';
 
 import Base64DecodeError from './Base64DecodeError.js';
-
-import variants from './variants.js';
 import DEFAULT_OPTIONS from './DEFAULT_OPTIONS.js';
+import byte1tochar2 from './byte1tochar2.js';
+import byte2tochar3 from './byte2tochar3.js';
+import byte3tochar4 from './byte3tochar4.js';
+import variants from './variants.js';
 
 export default function* _decode(bytes, options = DEFAULT_OPTIONS) {
 	if (options.variant) {
-		if (Object.prototype.hasOwnProperty.call(variants, options.variant)) {
+		if (Object.hasOwn(variants, options.variant)) {
 			options = variants[options.variant];
 		} else {
 			throw new ValueError(`unknown Base64 variant ${options.variant}`);

@@ -1,5 +1,5 @@
-import {enumerate} from '@iterable-iterator/zip';
 import {toObject, inverse} from '@iterable-iterator/mapping';
+import {enumerate} from '@iterable-iterator/zip';
 
 const variants = {
 	// Standard
@@ -32,7 +32,7 @@ const variants = {
 };
 
 for (const variant in variants) {
-	if (Object.prototype.hasOwnProperty.call(variants, variant)) {
+	if (Object.hasOwn(variants, variant)) {
 		variants[variant].index = toObject(
 			inverse(enumerate(variants[variant].alphabet)),
 		);

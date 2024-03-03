@@ -1,22 +1,21 @@
 import assert from 'node:assert';
+
+import {ValueError} from '@failure-abstraction/error';
 import {iter} from '@iterable-iterator/iter';
+import {toObject, inverse} from '@iterable-iterator/mapping';
 import {next, StopIteration} from '@iterable-iterator/next';
 import {enumerate} from '@iterable-iterator/zip';
-import {toObject, inverse} from '@iterable-iterator/mapping';
-import {ValueError} from '@failure-abstraction/error';
-
-import char4tobyte3 from './char4tobyte3.js';
-import char3tobyte2 from './char3tobyte2.js';
-import char2tobyte1 from './char2tobyte1.js';
 
 import Base64EncodeError from './Base64EncodeError.js';
-
-import variants from './variants.js';
 import DEFAULT_OPTIONS from './DEFAULT_OPTIONS.js';
+import char2tobyte1 from './char2tobyte1.js';
+import char3tobyte2 from './char3tobyte2.js';
+import char4tobyte3 from './char4tobyte3.js';
+import variants from './variants.js';
 
 export default function* _encode(string, options = DEFAULT_OPTIONS) {
 	if (options.variant) {
-		if (Object.prototype.hasOwnProperty.call(variants, options.variant)) {
+		if (Object.hasOwn(variants, options.variant)) {
 			options = variants[options.variant];
 		} else {
 			throw new ValueError(`unknown Base64 variant ${options.variant}`);
@@ -110,27 +109,27 @@ export default function* _encode(string, options = DEFAULT_OPTIONS) {
 			}
 		}
 
-		if (!Object.prototype.hasOwnProperty.call(index, a)) {
+		if (!Object.hasOwn(index, a)) {
 			const reason = `not in alphabet ${a}`;
 			const position = {start, end: start + 1};
 			throw new Base64EncodeError(reason, string, position);
 		}
 
-		if (!Object.prototype.hasOwnProperty.call(index, b)) {
+		if (!Object.hasOwn(index, b)) {
 			const reason = `not in alphabet ${b}`;
 			const position = {start: start + 1, end: start + 2};
 			throw new Base64EncodeError(reason, string, position);
 		}
 
 		if (stop > 2) {
-			if (!Object.prototype.hasOwnProperty.call(index, c)) {
+			if (!Object.hasOwn(index, c)) {
 				const reason = `not in alphabet ${c}`;
 				const position = {start: start + 2, end: start + 3};
 				throw new Base64EncodeError(reason, string, position);
 			}
 
 			if (stop > 3) {
-				if (!Object.prototype.hasOwnProperty.call(index, d)) {
+				if (!Object.hasOwn(index, d)) {
 					const reason = `not in alphabet ${d}`;
 					const position = {start: start + 3, end: start + 4};
 					throw new Base64EncodeError(reason, string, position);
@@ -151,17 +150,24 @@ export default function* _encode(string, options = DEFAULT_OPTIONS) {
 		}
 
 		switch (stop) {
-			case 4:
+			case 4: {
 				yield* char4tobyte3(index, a, b, c, d);
 				break;
-			case 3:
+			}
+
+			case 3: {
 				yield* char3tobyte2(index, a, b, c);
 				break;
-			case 2:
+			}
+
+			case 2: {
 				yield* char2tobyte1(index, a, b);
 				break;
-			default:
+			}
+
+			default: {
 				assert(false, `Unexpected stop value: ${stop}.`);
+			}
 		}
 
 		start += 4;
